@@ -28,18 +28,6 @@ import com.google.firebase.auth.FirebaseUser;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity  {
-
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    //private UserLoginTask mAuthTask = null;
-
     private static final String TAG = "EmailPassword";
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -56,7 +44,7 @@ public class LoginActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        //populateAutoComplete();
+
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
