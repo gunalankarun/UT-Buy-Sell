@@ -1,22 +1,21 @@
 package com.a461group5.utbuysell;
 
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
-import com.a461group5.utbuysell.MainActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -58,8 +57,22 @@ public class PageFragment extends Fragment {
      * Init demo settings
      */
     private void initDemoSettings(View view) {
-
-
+        Button logOutButton = (Button) view.findViewById(R.id.log_out_button);
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    FirebaseAuth.getInstance().signOut();
+                } else {
+                    // No user is signed in
+                }
+            }
+        });
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        TextView userName = (TextView) view.findViewById(R.id.show_user_name);
+        userName.setText(user.getEmail());
     }
 
     /**
