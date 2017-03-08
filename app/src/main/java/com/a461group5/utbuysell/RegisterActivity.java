@@ -20,60 +20,61 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
-
-
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity  {
-    private static final String TAG = "EmailPassword";
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+public class RegisterActivity extends AppCompatActivity  {
+
 
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mFirstNameView;
+    private EditText mLastNameView;
     private View mProgressView;
     private View mLoginFormView;
+    private String FIRST_NAME = null;
+    private String LAST_NAME = null;
+    private static final String TAG = "EmailPassword";
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.register_email);
 
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) findViewById(R.id.register_password);
+        mFirstNameView = (EditText) findViewById(R.id.register_first_name);
+        mLastNameView = (EditText) findViewById(R.id.register_last_name);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    //attemptLogin();
                     return true;
                 }
                 return false;
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = (Button) findViewById(R.id.try_register_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptRegister();
             }
         });
-        Button registerButton = (Button) findViewById(R.id.register_button);
-        registerButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                LoginActivity.this.startActivity(intent);
-            }
-        });
-
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -84,20 +85,45 @@ public class LoginActivity extends AppCompatActivity  {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
+                    // User was registered and is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    LoginActivity.this.startActivity(intent);
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(FIRST_NAME + " " + LAST_NAME)
+                            .build();
+
+                    user.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "User profile updated.");
+                                    }
+                                }
+                            });
+                    user.sendEmailVerification()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "Email sent.");
+                                    }
+                                }
+                            });
+                    Toast.makeText(RegisterActivity.this, "A verification email was sent. Please verify your email",
+                            Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    RegisterActivity.this.startActivity(intent);
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // [START_EXCLUDE]
-
-                // [END_EXCLUDE]
             }
         };
     }
+
+
 
     @Override
     public void onStart() {
@@ -113,19 +139,20 @@ public class LoginActivity extends AppCompatActivity  {
         }
     }
 
-
     /**
      * Attempts to register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual registration is made.
      */
-    private void register() {
+    private void attemptRegister() {
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String firstName = mFirstNameView.getText().toString();
+        String lastName = mLastNameView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -148,6 +175,18 @@ public class LoginActivity extends AppCompatActivity  {
             cancel = true;
         }
 
+        //Check that a first and last name was entered
+        if (TextUtils.isEmpty(firstName)) {
+            mFirstNameView.setError("Please enter your first name!");
+            focusView = mFirstNameView;
+            cancel = true;
+        } else if (TextUtils.isEmpty(lastName)) {
+            mLastNameView.setError("Please enter your last name!");
+            focusView = mLastNameView;
+            cancel = true;
+        }
+        FIRST_NAME = firstName.trim();
+        LAST_NAME = lastName.trim();
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -159,85 +198,37 @@ public class LoginActivity extends AppCompatActivity  {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                             if (task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, R.string.auth_pass, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, R.string.auth_pass, Toast.LENGTH_SHORT).show();
+                                //try to signin
+
+
                             }
-                            // If registration fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
+                            // If registration fails, display a message to the user
                             if (!task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, R.string.auth_failed,
-                                        Toast.LENGTH_LONG).show();
+                                try {
+                                    throw task.getException();
+                                }  catch(FirebaseAuthWeakPasswordException e) {
+                                }  catch(FirebaseAuthInvalidCredentialsException e) {
+                                }  catch(FirebaseAuthUserCollisionException e) {
+                                    Toast.makeText(RegisterActivity.this, R.string.auth_failed,
+                                            Toast.LENGTH_LONG).show();
+                                } catch(Exception e) {
+                                    Log.e(TAG, e.getMessage());
+                                }
+                                FIRST_NAME = null;
+                                LAST_NAME = null;
                             }
                         }
                     });
+
         }
     }
 
 
-    /**
-     * Attempts to sign in the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin() {
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
 
-//        // Check for a valid password, if the user entered one.
-//        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-//            mPasswordView.setError(getString(R.string.error_invalid_password));
-//            focusView = mPasswordView;
-//            cancel = true;
-//        }
 
-//        // Check for a valid email address.
-//        if (TextUtils.isEmpty(email)) {
-//            mEmailView.setError(getString(R.string.error_field_required));
-//            focusView = mEmailView;
-//            cancel = true;
-//        } else if (!isEmailValid(email)) {
-//            mEmailView.setError(getString(R.string.error_invalid_email));
-//            focusView = mEmailView;
-//            cancel = true;
-//        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // [START sign_in_with_email]
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                            if(task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, R.string.login_worked, Toast.LENGTH_LONG).show();
-//                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                                LoginActivity.this.startActivity(intent);
-                            }
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Log.w(TAG, "signInWithEmail:failed", task.getException());
-                                Toast.makeText(LoginActivity.this, R.string.error_invalid_email_pass,
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-        }
-    }
 
     private boolean isEmailValid(String email) {
         String domain = email.substring(email.indexOf('@') + 1);
@@ -247,5 +238,9 @@ public class LoginActivity extends AppCompatActivity  {
     private boolean isPasswordValid(String password) {
         return password.length() >= 6;
     }
+
+
+
+
 }
 

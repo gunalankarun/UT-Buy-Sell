@@ -26,11 +26,12 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name = "error_invalid_email_pass">Invalid email or password</string>
-    <string name ="login_worked">Login successful</string>
+    <string name="error_invalid_email_pass">Invalid email or password</string>
+    <string name="login_worked">Login successful</string>
     <string name="auth_failed">Registration error: account exists or something went wrong</string>
     <string name="auth_pass">Your account is registered!</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_register">Register</string>
 </resources>
