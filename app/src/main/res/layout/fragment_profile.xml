@@ -42,7 +42,15 @@
         android:text="Enable translucent navigation" />
 
     <TextView
-        android:id="@+id/show_user_name"
+        android:id="@+id/show_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/show_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.14"

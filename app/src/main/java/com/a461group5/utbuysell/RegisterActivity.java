@@ -27,7 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 /**
- * A login screen that offers login via email/password.
+ * A register screen that allows users to enter info to register an account.
  */
 public class RegisterActivity extends AppCompatActivity  {
 
@@ -224,12 +224,6 @@ public class RegisterActivity extends AppCompatActivity  {
         }
     }
 
-
-
-
-
-
-
     private boolean isEmailValid(String email) {
         String domain = email.substring(email.indexOf('@') + 1);
         return domain.equals("utexas.edu");
@@ -238,9 +232,5 @@ public class RegisterActivity extends AppCompatActivity  {
     private boolean isPasswordValid(String password) {
         return password.length() >= 6;
     }
-
-
-
-
 }
 

@@ -1,10 +1,15 @@
 package com.a461group5.utbuysell;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +60,7 @@ public class PageFragment extends Fragment {
 
     /**
      * Init demo settings
+     * TODO: profile tab does not refresh (does not update user info such as not-verified/verified)
      */
     private void initDemoSettings(View view) {
         Button logOutButton = (Button) view.findViewById(R.id.log_out_button);
@@ -71,8 +77,23 @@ public class PageFragment extends Fragment {
             }
         });
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        TextView userName = (TextView) view.findViewById(R.id.show_user_name);
-        userName.setText(user.getEmail());
+        TextView displayName = (TextView) view.findViewById(R.id.show_name);
+        displayName.setText(user.getDisplayName());
+        TextView displayEmail = (TextView) view.findViewById(R.id.show_email);
+
+        String email = user.getEmail();
+        if (!user.isEmailVerified()) {
+            email += " (Not-verified)";
+            SpannableStringBuilder sb = new SpannableStringBuilder(email);
+            ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(255, 0, 0));
+            StyleSpan iss = new StyleSpan(android.graphics.Typeface.ITALIC);
+            sb.setSpan(fcs, user.getEmail().length() + 1, email.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            sb.setSpan(iss, user.getEmail().length() + 1, email.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            displayEmail.setText(sb);
+        } else {
+            displayEmail.setText(user.getEmail());
+        }
+
     }
 
     /**
