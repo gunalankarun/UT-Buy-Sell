@@ -49,20 +49,20 @@ public class PageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getArguments().getInt("index", 0) == 3) {
             View view = inflater.inflate(R.layout.fragment_profile, container, false);
-            initDemoSettings(view);
+            initProfile(view);
             return view;
         } else {
             View view = inflater.inflate(R.layout.fragment_list, container, false);
-            initDemoList(view);
+            initListings(view);
             return view;
         }
     }
 
     /**
-     * Init demo settings
+     * Init Profile View
      * TODO: profile tab does not refresh (does not update user info such as not-verified/verified)
      */
-    private void initDemoSettings(View view) {
+    private void initProfile(View view) {
         Button logOutButton = (Button) view.findViewById(R.id.log_out_button);
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,9 +111,10 @@ public class PageFragment extends Fragment {
     }
 
     /**
-     * Init the fragment
+     * Init Listings View
+     * TODO: profile tab does not refresh (does not update user info such as not-verified/verified)
      */
-    private void initDemoList(View view) {
+    private void initListings(View view) {
 
         fragmentContainer = (FrameLayout) view.findViewById(R.id.fragment_container);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_demo_recycler_view);
@@ -132,29 +133,12 @@ public class PageFragment extends Fragment {
 
     /**
      * Refresh
+     * Called when a tab is clicked while currently in that tab
      */
     public void refresh() {
         if (getArguments().getInt("index", 0) > 0 && recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
-
-        if (getArguments().getInt("index", 0) == 3) {
-            View view =  getView();
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-            TextView displayName = (TextView) view.findViewById(R.id.show_name);
-            displayName.setText(user.getDisplayName());
-
-            TextView displayEmail = (TextView) view.findViewById(R.id.show_email);
-
-            if (!user.isEmailVerified()) {
-                displayEmail.setText("refresh");
-            } else {
-                displayEmail.setText(user.getEmail());
-            }
-        }
-
-
     }
 
     /**
