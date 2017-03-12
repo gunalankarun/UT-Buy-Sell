@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="android:windowBackground">@color/colorPrimary</item>-->
     </style>
 
     <style name="setting">
@@ -17,6 +18,11 @@
         <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="AppTheme.TranslucentNavigation" parent="AppTheme">
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
 </resources>
