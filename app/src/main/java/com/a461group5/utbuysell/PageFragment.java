@@ -76,9 +76,23 @@ public class PageFragment extends Fragment {
                 }
             }
         });
+
+        Button deleteAccountButton = (Button) view.findViewById(R.id.delete_account_button);
+        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                user.delete();
+
+            }
+        });
+
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         TextView displayName = (TextView) view.findViewById(R.id.show_name);
         displayName.setText(user.getDisplayName());
+
         TextView displayEmail = (TextView) view.findViewById(R.id.show_email);
 
         String email = user.getEmail();
@@ -123,6 +137,24 @@ public class PageFragment extends Fragment {
         if (getArguments().getInt("index", 0) > 0 && recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
+
+        if (getArguments().getInt("index", 0) == 3) {
+            View view =  getView();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            TextView displayName = (TextView) view.findViewById(R.id.show_name);
+            displayName.setText(user.getDisplayName());
+
+            TextView displayEmail = (TextView) view.findViewById(R.id.show_email);
+
+            if (!user.isEmailVerified()) {
+                displayEmail.setText("refresh");
+            } else {
+                displayEmail.setText(user.getEmail());
+            }
+        }
+
+
     }
 
     /**
@@ -133,6 +165,29 @@ public class PageFragment extends Fragment {
         if (fragmentContainer != null) {
             Animation fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
             fragmentContainer.startAnimation(fadeIn);
+        }
+
+        // Rechecks if verified
+        if (getArguments().getInt("index", 0) == 3) {
+            View view =  getView();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            TextView displayName = (TextView) view.findViewById(R.id.show_name);
+            displayName.setText(user.getDisplayName());
+
+            TextView displayEmail = (TextView) view.findViewById(R.id.show_email);
+            String email = user.getEmail();
+            if (!user.isEmailVerified()) {
+                email += " (Not-verified)";
+                SpannableStringBuilder sb = new SpannableStringBuilder(email);
+                ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(255, 0, 0));
+                StyleSpan iss = new StyleSpan(android.graphics.Typeface.ITALIC);
+                sb.setSpan(fcs, user.getEmail().length() + 1, email.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                sb.setSpan(iss, user.getEmail().length() + 1, email.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                displayEmail.setText(sb);
+            } else {
+                displayEmail.setText(user.getEmail());
+            }
         }
     }
 
