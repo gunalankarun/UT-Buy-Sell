@@ -6,7 +6,8 @@
 
     <color name="colorPrimary">#355555</color>
     <color name="colorPrimaryDark">#33000000</color>
-    <color name="colorAccent">#e3aaaa</color>
+    <!--<color name="colorAccent">#e3aaaa</color>-->
+    <color name="colorAccent">#ffa07a</color>
 
     <color name="colorInactive">#747474</color>
     <color name="colorActiveSmall">#FFFFFF</color>

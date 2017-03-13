@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#355555"));
 
         // Change Icon/Text Colors
-        bottomNavigation.setAccentColor(Color.parseColor("#e3aaaa"));
+        bottomNavigation.setAccentColor(Color.parseColor("#ffa07a"));
         bottomNavigation.setInactiveColor(Color.parseColor("#FFFFFF"));
 
         // Enable the translation of the FloatingActionButton
