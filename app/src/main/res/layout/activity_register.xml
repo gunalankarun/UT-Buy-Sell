@@ -63,30 +63,41 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:id="@+id/register_first_name"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="First Name"
-                android:inputType="textPersonName" />
+                android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/register_last_name"
+                <EditText
+                    android:id="@+id/register_first_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="First Name"
+                    android:inputType="textPersonName" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Last Name"
-                android:inputType="textPersonName" />
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/register_last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Last Name"
+                    android:inputType="textPersonName" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/try_register_button"
-                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_register"
-                android:textStyle="bold" />
+                android:text="@string/action_register" />
 
         </LinearLayout>
     </ScrollView>
