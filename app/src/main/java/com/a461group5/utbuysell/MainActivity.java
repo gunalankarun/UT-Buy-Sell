@@ -3,6 +3,7 @@ package com.a461group5.utbuysell;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -104,6 +105,18 @@ public class MainActivity extends AppCompatActivity {
         navigationAdapter = new AHBottomNavigationAdapter(this, R.menu.bottom_navigation_menu_4);
         navigationAdapter.setupWithBottomNavigation(bottomNavigation, tabColors);
 
+
+        // Set background color
+        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#355555"));
+
+        // Disable the translation inside the CoordinatorLayout
+        bottomNavigation.setBehaviorTranslationEnabled(false);
+
+        // Change Icon/Text Colors
+        bottomNavigation.setAccentColor(Color.parseColor("#e3aaaa"));
+        bottomNavigation.setInactiveColor(Color.parseColor("#CCCCCC"));
+
+        // Enable the translation of the FloatingActionButton
         bottomNavigation.manageFloatingActionButtonBehavior(floatingActionButton);
         bottomNavigation.setTranslucentNavigationEnabled(true);
 
