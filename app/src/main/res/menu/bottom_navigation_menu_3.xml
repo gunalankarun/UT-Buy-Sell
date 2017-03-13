@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:title="@string/menu_1"
-        android:icon="@drawable/ic_apps_black_24dp" />
+        android:icon="@drawable/ic_listings" />
 
     <item
         android:title="@string/menu_2"
