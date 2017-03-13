@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -107,11 +108,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Set background color
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#355555"));
+        bottomNavigation.setDefaultBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
 
         // Change Icon/Text Colors
-        bottomNavigation.setAccentColor(Color.parseColor("#ffa07a"));
-        bottomNavigation.setInactiveColor(Color.parseColor("#FFFFFF"));
+        bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.colorAccent));
+        bottomNavigation.setInactiveColor(Color.WHITE);
 
         // Enable the translation of the FloatingActionButton
         bottomNavigation.manageFloatingActionButtonBehavior(floatingActionButton);
