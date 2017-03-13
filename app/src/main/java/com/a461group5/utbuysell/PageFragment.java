@@ -51,8 +51,17 @@ public class PageFragment extends Fragment {
             View view = inflater.inflate(R.layout.fragment_profile, container, false);
             initProfile(view);
             return view;
+        } else if (getArguments().getInt("index", 0) == 2) {
+            View view = inflater.inflate(R.layout.fragment_inbox, container, false);
+            initInbox(view);
+            return view;
+        } else if (getArguments().getInt("index", 0) == 1) {
+            // TODO: Change this to transactions view specific
+            View view = inflater.inflate(R.layout.fragment_listings, container, false);
+            initListings(view);
+            return view;
         } else {
-            View view = inflater.inflate(R.layout.fragment_list, container, false);
+            View view = inflater.inflate(R.layout.fragment_listings, container, false);
             initListings(view);
             return view;
         }
@@ -88,6 +97,8 @@ public class PageFragment extends Fragment {
             }
         });
 
+        TextView ProfileHeader = (TextView) view.findViewById(R.id.profile_header);
+        ProfileHeader.setText("Profile");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         TextView displayName = (TextView) view.findViewById(R.id.show_name);
@@ -116,11 +127,18 @@ public class PageFragment extends Fragment {
      */
     private void initListings(View view) {
 
-        fragmentContainer = (FrameLayout) view.findViewById(R.id.fragment_container);
-        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_demo_recycler_view);
+        fragmentContainer = (FrameLayout) view.findViewById(R.id.fragment_listings_container);
+        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_listings_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+
+        TextView ListingsHeader = (TextView) view.findViewById(R.id.listings_header);
+        ListingsHeader.setText("All Listings");
+
+        if (getArguments().getInt("index", 0) == 1) {
+            ListingsHeader.setText("Transactions");
+        }
 
         ArrayList<String> itemsData = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
@@ -129,6 +147,22 @@ public class PageFragment extends Fragment {
 
         ListingsAdapter adapter = new ListingsAdapter(itemsData);
         recyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * Init Inbox View
+     */
+    private void initInbox(View view) {
+        TextView inboxHeader = (TextView) view.findViewById(R.id.inbox_header);
+        inboxHeader.setText("Inbox");
+    }
+
+    /**
+     * Init Transactions View
+     * TODO: Implement this
+     */
+    private void initTransactions(View view) {
+
     }
 
     /**
