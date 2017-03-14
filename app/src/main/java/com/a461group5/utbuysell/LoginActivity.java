@@ -34,8 +34,7 @@ public class LoginActivity extends AppCompatActivity  {
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +73,7 @@ public class LoginActivity extends AppCompatActivity  {
         });
 
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -114,7 +112,6 @@ public class LoginActivity extends AppCompatActivity  {
 
     /**
      * Attempts to sign in the account specified by the login form.
-     * TODO: fix bug - Clicking login without entering anything causes app to crash
      */
     private void attemptLogin() {
         // Reset errors.
@@ -127,24 +124,17 @@ public class LoginActivity extends AppCompatActivity  {
 
         boolean cancel = false;
         View focusView = null;
+        if (email.isEmpty()) {
+            cancel = true;
+            mEmailView.setError("Please enter an email!");
+            focusView = mEmailView;
+        }
+        if (password.isEmpty()) {
+            cancel = true;
+            mPasswordView.setError("Please enter a password!");
+            focusView = mPasswordView;
+        }
 
-//        // Check for a valid password, if the user entered one.
-//        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-//            mPasswordView.setError(getString(R.string.error_invalid_password));
-//            focusView = mPasswordView;
-//            cancel = true;
-//        }
-
-//        // Check for a valid email address.
-//        if (TextUtils.isEmpty(email)) {
-//            mEmailView.setError(getString(R.string.error_field_required));
-//            focusView = mEmailView;
-//            cancel = true;
-//        } else if (!isEmailValid(email)) {
-//            mEmailView.setError(getString(R.string.error_invalid_email));
-//            focusView = mEmailView;
-//            cancel = true;
-//        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -160,8 +150,6 @@ public class LoginActivity extends AppCompatActivity  {
 
                             if(task.isSuccessful()) {
                                 Toast.makeText(LoginActivity.this, R.string.login_worked, Toast.LENGTH_LONG).show();
-//                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                                LoginActivity.this.startActivity(intent);
                             }
                             // If sign in fails, display a message to the user. If sign in succeeds
                             // the auth state listener will be notified and logic to handle the
@@ -174,15 +162,6 @@ public class LoginActivity extends AppCompatActivity  {
                         }
                     });
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        String domain = email.substring(email.indexOf('@') + 1);
-        return domain.equals("utexas.edu");
-    }
-
-    private boolean isPasswordValid(String password) {
-        return password.length() >= 6;
     }
 }
 
