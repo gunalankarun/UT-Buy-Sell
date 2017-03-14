@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         tabColors = getApplicationContext().getResources().getIntArray(R.array.tab_colors);
         navigationAdapter = new AHBottomNavigationAdapter(this, R.menu.bottom_navigation_menu_4);
         navigationAdapter.setupWithBottomNavigation(bottomNavigation, tabColors);
-
+        bottomNavigation.setTranslucentNavigationEnabled(true);
 
         // Set background color
         bottomNavigation.setDefaultBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
@@ -116,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Enable the translation of the FloatingActionButton
         bottomNavigation.manageFloatingActionButtonBehavior(floatingActionButton);
-        bottomNavigation.setTranslucentNavigationEnabled(true);
-
         floatingButtonAnimateIn();
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -245,13 +243,6 @@ public class MainActivity extends AppCompatActivity {
     public void reload() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
-    }
-
-    /**
-     * Return the number of items in the bottom navigation
-     */
-    public int getBottomNavigationNbItems() {
-        return bottomNavigation.getItemsCount();
     }
 
 }

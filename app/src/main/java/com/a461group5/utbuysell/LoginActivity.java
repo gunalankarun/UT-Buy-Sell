@@ -114,6 +114,7 @@ public class LoginActivity extends AppCompatActivity  {
 
     /**
      * Attempts to sign in the account specified by the login form.
+     * TODO: fix bug - Clicking login without entering anything causes app to crash
      */
     private void attemptLogin() {
         // Reset errors.
