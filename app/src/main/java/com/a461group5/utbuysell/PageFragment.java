@@ -135,7 +135,6 @@ public class PageFragment extends Fragment {
 
     /**
      * Init Listings View
-     * TODO: profile tab does not refresh (does not update user info such as not-verified/verified)
      */
     private void initListings(View view) {
 
