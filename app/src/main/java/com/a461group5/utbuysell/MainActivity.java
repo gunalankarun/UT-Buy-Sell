@@ -118,7 +118,60 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.manageFloatingActionButtonBehavior(floatingActionButton);
         bottomNavigation.setTranslucentNavigationEnabled(true);
 
+        floatingButtonAnimateIn();
 
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent myIntent = new Intent(MainActivity.this, createPostActivity.class);
+                //myIntent.putExtra("key", value); //Optional parameters
+                MainActivity.this.startActivity(myIntent);
+            }
+        });
+
+
+        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+
+                if (currentFragment == null) {
+                    currentFragment = adapter.getCurrentFragment();
+                }
+
+                if (wasSelected) {
+                    currentFragment.refresh();
+                    return true;
+                }
+
+                if (currentFragment != null) {
+                    currentFragment.willBeHidden();
+                }
+
+                viewPager.setCurrentItem(position, false);
+                currentFragment = adapter.getCurrentFragment();
+                currentFragment.willBeDisplayed();
+
+                if (position == 0) {
+//                    bottomNavigation.setNotification("", 1);
+                    floatingButtonAnimateIn();
+                } else {
+                    if (floatingActionButton.getVisibility() == View.VISIBLE) {
+                        floatingButtonAnimateOut();
+                    }
+                }
+
+                return true;
+            }
+        });
+
+
+        viewPager.setOffscreenPageLimit(4);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+
+        currentFragment = adapter.getCurrentFragment();
+    }
+
+    private void floatingButtonAnimateIn() {
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setAlpha(0f);
         floatingActionButton.setScaleX(0f);
@@ -153,113 +206,37 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .start();
+    }
 
+    private void floatingButtonAnimateOut() {
+        floatingActionButton.animate()
+                .alpha(0)
+                .scaleX(0)
+                .scaleY(0)
+                .setDuration(300)
+                .setInterpolator(new LinearOutSlowInInterpolator())
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
 
-
-
-
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-
-                if (currentFragment == null) {
-                    currentFragment = adapter.getCurrentFragment();
-                }
-
-                if (wasSelected) {
-                    currentFragment.refresh();
-                    return true;
-                }
-
-                if (currentFragment != null) {
-                    currentFragment.willBeHidden();
-                }
-
-                viewPager.setCurrentItem(position, false);
-                currentFragment = adapter.getCurrentFragment();
-                currentFragment.willBeDisplayed();
-
-                if (position == 0) {
-//                    bottomNavigation.setNotification("", 1);
-
-                    floatingActionButton.setVisibility(View.VISIBLE);
-                    floatingActionButton.setAlpha(0f);
-                    floatingActionButton.setScaleX(0f);
-                    floatingActionButton.setScaleY(0f);
-                    floatingActionButton.animate()
-                            .alpha(1)
-                            .scaleX(1)
-                            .scaleY(1)
-                            .setDuration(300)
-                            .setInterpolator(new OvershootInterpolator())
-                            .setListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    floatingActionButton.animate()
-                                            .setInterpolator(new LinearOutSlowInInterpolator())
-                                            .start();
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animation) {
-
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animation) {
-
-                                }
-                            })
-                            .start();
-
-                } else {
-                    if (floatingActionButton.getVisibility() == View.VISIBLE) {
-                        floatingActionButton.animate()
-                                .alpha(0)
-                                .scaleX(0)
-                                .scaleY(0)
-                                .setDuration(300)
-                                .setInterpolator(new LinearOutSlowInInterpolator())
-                                .setListener(new Animator.AnimatorListener() {
-                                    @Override
-                                    public void onAnimationStart(Animator animation) {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        floatingActionButton.setVisibility(View.GONE);
-                                    }
-
-                                    @Override
-                                    public void onAnimationCancel(Animator animation) {
-                                        floatingActionButton.setVisibility(View.GONE);
-                                    }
-
-                                    @Override
-                                    public void onAnimationRepeat(Animator animation) {
-
-                                    }
-                                })
-                                .start();
                     }
-                }
 
-                return true;
-            }
-        });
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        floatingActionButton.setVisibility(View.GONE);
+                    }
 
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        floatingActionButton.setVisibility(View.GONE);
+                    }
 
-        viewPager.setOffscreenPageLimit(4);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
 
-        currentFragment = adapter.getCurrentFragment();
+                    }
+                })
+                .start();
     }
 
     /**
