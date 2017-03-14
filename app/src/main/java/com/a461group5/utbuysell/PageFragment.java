@@ -17,11 +17,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -29,9 +31,15 @@ import java.util.ArrayList;
  */
 public class PageFragment extends Fragment {
 
-    private FrameLayout fragmentContainer;
+    //private FrameLayout fragmentContainer;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
+
+    private enum Type {
+        LISTINGS, TRANSACTIONS, INBOX, PROFILE
+    }
+
+    Type myType;
 
     /**
      * Create a new instance of the fragment
@@ -48,19 +56,23 @@ public class PageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getArguments().getInt("index", 0) == 3) {
+            myType = Type.PROFILE;
             View view = inflater.inflate(R.layout.fragment_profile, container, false);
             initProfile(view);
             return view;
         } else if (getArguments().getInt("index", 0) == 2) {
+            myType = Type.INBOX;
             View view = inflater.inflate(R.layout.fragment_inbox, container, false);
             initInbox(view);
             return view;
         } else if (getArguments().getInt("index", 0) == 1) {
             // TODO: Change this to transactions view specific
+            myType = Type.TRANSACTIONS;
             View view = inflater.inflate(R.layout.fragment_listings, container, false);
             initListings(view);
             return view;
         } else {
+            myType = Type.LISTINGS;
             View view = inflater.inflate(R.layout.fragment_listings, container, false);
             initListings(view);
             return view;
@@ -127,7 +139,6 @@ public class PageFragment extends Fragment {
      */
     private void initListings(View view) {
 
-        fragmentContainer = (FrameLayout) view.findViewById(R.id.fragment_listings_container);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_listings_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -136,7 +147,7 @@ public class PageFragment extends Fragment {
         TextView ListingsHeader = (TextView) view.findViewById(R.id.listings_header);
         ListingsHeader.setText("All Listings");
 
-        if (getArguments().getInt("index", 0) == 1) {
+        if (myType == Type.TRANSACTIONS) {
             ListingsHeader.setText("Transactions");
         }
 
@@ -170,7 +181,7 @@ public class PageFragment extends Fragment {
      * Called when a tab is clicked while currently in that tab
      */
     public void refresh() {
-        if (getArguments().getInt("index", 0) > 0 && recyclerView != null) {
+        if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
     }
@@ -179,15 +190,30 @@ public class PageFragment extends Fragment {
      * Called when a fragment will be displayed
      */
     public void willBeDisplayed() {
-        // Do what you want here, for example animate the content
-        if (fragmentContainer != null) {
-            Animation fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
-            fragmentContainer.startAnimation(fadeIn);
+        View view =  getView();
+
+        // Animate according to layout
+        Animation fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
+        LinearLayout layoutContainer = null;
+        switch(myType) {
+            case LISTINGS:
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
+                break;
+            case TRANSACTIONS:
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
+                break;
+            case INBOX:
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_inbox_container);
+                break;
+            case PROFILE:
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_profile_container);
+                break;
         }
+        layoutContainer.startAnimation(fadeIn);
 
         // Rechecks if verified
-        if (getArguments().getInt("index", 0) == 3) {
-            View view =  getView();
+        if (myType == Type.PROFILE) {
+
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
             TextView displayName = (TextView) view.findViewById(R.id.show_name);
@@ -213,9 +239,25 @@ public class PageFragment extends Fragment {
      * Called when a fragment will be hidden
      */
     public void willBeHidden() {
-        if (fragmentContainer != null) {
-            Animation fadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
-            fragmentContainer.startAnimation(fadeOut);
+        View view =  getView();
+
+        // Animate according to layout
+        Animation fadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
+        LinearLayout layoutContainer = null;
+        switch(myType) {
+            case LISTINGS:
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
+                break;
+            case TRANSACTIONS:
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
+                break;
+            case INBOX:
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_inbox_container);
+                break;
+            case PROFILE:
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_profile_container);
+                break;
         }
+        layoutContainer.startAnimation(fadeOut);
     }
 }
