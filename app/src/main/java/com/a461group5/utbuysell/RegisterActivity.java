@@ -25,6 +25,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A register screen that allows users to enter info to register an account.
@@ -88,6 +90,8 @@ public class RegisterActivity extends AppCompatActivity  {
                     // User was registered and is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
+
+                    //Update user's display name
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(FIRST_NAME + " " + LAST_NAME)
                             .build();
@@ -101,6 +105,15 @@ public class RegisterActivity extends AppCompatActivity  {
                                     }
                                 }
                             });
+
+                    //store user info into database
+                    DatabaseReference mDatabase;
+                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                    User userDB = new User(user.getEmail(), FIRST_NAME, LAST_NAME);
+                    mDatabase.child("users").child(user.getUid()).setValue(userDB);
+
+
+                    
                     user.sendEmailVerification()
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

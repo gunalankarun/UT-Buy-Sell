@@ -27,5 +27,5 @@ public class User {
         buyer_posts = new HashMap<String, Boolean>();
         chats = new HashMap<String, Boolean>();
     }
-    
+
 }
