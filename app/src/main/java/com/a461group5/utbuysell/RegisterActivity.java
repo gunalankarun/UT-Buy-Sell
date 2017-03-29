@@ -212,9 +212,7 @@ public class RegisterActivity extends AppCompatActivity  {
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                             if (task.isSuccessful()) {
                                 Toast.makeText(RegisterActivity.this, R.string.auth_pass, Toast.LENGTH_SHORT).show();
-                                //try to signin
-
-
+                                //try to signin: done automatically
                             }
                             // If registration fails, display a message to the user
                             if (!task.isSuccessful()) {
