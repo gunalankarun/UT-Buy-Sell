@@ -102,6 +102,7 @@ public class MessageActivity extends Activity {
                     return;
                 }
                 sendMessage(messageBody);
+                messageBodyField.getText().clear();
 
             }
         });
