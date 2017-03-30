@@ -74,6 +74,7 @@ public class createPostActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(priceText) || TextUtils.isEmpty(categoriesText)) {
             Toast.makeText(createPostActivity.this, "All fields are required",
                     Toast.LENGTH_SHORT).show();
+            mSubmitButton.setEnabled(true);
             return;
         }
 
@@ -81,11 +82,21 @@ public class createPostActivity extends AppCompatActivity {
         String[] categories = categoriesText.split(",");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        // Check if User is verified
+        if (!user.isEmailVerified()) {
+            Toast.makeText(createPostActivity.this, "ERROR: You must verify your email in order to Post.",
+                    Toast.LENGTH_SHORT).show();
+            mSubmitButton.setEnabled(true);
+            return;
+        }
+
         String key = mDatabase.child("posts").push().getKey();
         Post post = new Post(title, description, user.getUid(), price, categories);
         mDatabase.child("posts").child(key).setValue(post);
 
         // TODO: Update user array with post information
+        // TODO: Update Category or create new one
 
         // Reenable Button
         mSubmitButton.setEnabled(true);
