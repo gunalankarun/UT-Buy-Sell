@@ -43,6 +43,8 @@ public class LoginActivity extends AppCompatActivity  {
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
+        this.setTitle(getResources().getString(R.string.title_activity_login));
+
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
