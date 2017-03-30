@@ -18,7 +18,7 @@
         android:id="@+id/divider"
         android:layout_width="fill_parent"
 		android:layout_height="1dip"
-		android:background="@color/off_white"
+		android:background="@android:color/white"
 		android:layout_above="@+id/relSendMessage" />
 
     <RelativeLayout
@@ -35,7 +35,6 @@
                 android:id="@+id/messageBodyField"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/message_elipses"
                 android:textSize="14sp"
                 android:textColor="@android:color/black"
                 android:layout_marginRight="10dp"

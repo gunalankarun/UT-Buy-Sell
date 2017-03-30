@@ -23,7 +23,7 @@
         <TextView
                 android:id="@+id/txtDate"
                 android:layout_alignParentLeft="true"
-                android:textColor="@color/sinch_purple"
+                android:textColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="2dp"
