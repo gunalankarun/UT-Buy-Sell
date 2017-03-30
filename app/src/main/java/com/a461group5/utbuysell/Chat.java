@@ -28,6 +28,15 @@ public class Chat {
             return body;
         }
 
+        public String getSender() {
+            return senderId;
+        }
+
+        public String getReceiver() {
+            return receiverId;
+        }
+
+
     }
 
     List<Message> messages;
@@ -57,6 +66,7 @@ public class Chat {
         if (messages == null) messages = new ArrayList<Message>();
         messages.add(new Message(message, senderID, recID));
     }
+
 
     public Chat.Message getLastMessage() {
         return messages.get(messages.size() - 1);

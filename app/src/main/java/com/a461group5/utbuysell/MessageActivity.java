@@ -1,6 +1,7 @@
 package com.a461group5.utbuysell;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,7 +28,7 @@ public class MessageActivity extends Activity {
     private String path;
     private MessageAdapter messageAdapter;
     private ListView messagesList;
-
+    private boolean firstTime = true;
     DatabaseReference mDatabase;
     FirebaseUser user;
     Chat chat;
@@ -42,24 +43,24 @@ public class MessageActivity extends Activity {
         messagesList.setAdapter(messageAdapter);
 
         //get chatId from the intent
-//        Intent intent = getIntent();
-//        chatId = intent.getStringExtra("CHAT_ID");
-        chatId = "chatTestKey";
+        Intent intent = getIntent();
+        chatId = intent.getStringExtra("CHAT_ID");
+
 
         path = "chats/" + chatId;
 
 
         mDatabase = FirebaseDatabase.getInstance().getReference(path);
 
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snap) {
-                chat = snap.getValue(Chat.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError e) { }
-        });
+//        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snap) {
+//                chat = snap.getValue(Chat.class);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError e) { }
+//        });
 
 
 
@@ -69,7 +70,14 @@ public class MessageActivity extends Activity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Chat object and use the values to update the UI
                  chat = dataSnapshot.getValue(Chat.class);
-                messageAdapter.addMessage(chat.getLastMessage(), MessageAdapter.DIRECTION_OUTGOING);
+                if (firstTime) {
+                    for (Chat.Message m : chat.getMessages()) {
+                        displayMessage(m);
+                    }
+                    firstTime = false;
+                } else {
+                    displayMessage(chat.getLastMessage());
+                }
             }
 
             @Override
@@ -107,6 +115,16 @@ public class MessageActivity extends Activity {
             mDatabase.setValue(chat);
         } catch (Exception e) {
             System.err.println(e.getMessage());
+        }
+    }
+
+    //checks if message was a sent or received message (from the viewpoint of this user)
+    //and displays correct type of message bubble
+    void displayMessage(Chat.Message msg) {
+        if (msg.getSender().equals(user.getUid())) {
+            messageAdapter.addMessage(msg, MessageAdapter.DIRECTION_OUTGOING);
+        } else {
+            messageAdapter.addMessage(msg, MessageAdapter.DIRECTION_INCOMING);
         }
     }
 
