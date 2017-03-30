@@ -30,11 +30,11 @@ public class Chat {
             return body;
         }
 
-        public String getSender() {
+        public String getSenderId() {
             return senderId;
         }
 
-        public String getReceiver() {
+        public String getReceiverId() {
             return receiverId;
         }
 

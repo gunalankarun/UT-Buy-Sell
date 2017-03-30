@@ -115,7 +115,7 @@ public class MessageActivity extends Activity {
     //checks if message was a sent or received message (from the viewpoint of this user)
     //and displays correct type of message bubble
     void displayMessage(Chat.Message msg) {
-        if (msg.getSender().equals(user.getUid())) {
+        if (msg.getSenderId().equals(user.getUid())) {
             messageAdapter.addMessage(msg, MessageAdapter.DIRECTION_OUTGOING);
         } else {
             messageAdapter.addMessage(msg, MessageAdapter.DIRECTION_INCOMING);
