@@ -19,7 +19,7 @@ public class Category {
     }
 
     public Category(String name, String description, String postId) {
-        this.name = name.trim().substring(0, 1).toUpperCase() + name.trim().substring(1).toLowerCase();
+        this.name = name.trim().toLowerCase();
         this.description = description;
         this.posts = new HashMap<>();
         this.posts.put(postId, true);

@@ -91,11 +91,15 @@ public class createPostActivity extends AppCompatActivity {
             return;
         }
 
+        // Save Post
         String key = mDatabase.child("posts").push().getKey();
         Post post = new Post(title, description, user.getUid(), price, categories);
         mDatabase.child("posts").child(key).setValue(post);
 
-        // TODO: Update user array with post information
+
+
+        // Add post reference to User
+        mDatabase.child("users").child(user.getUid()).child("posts").child(key).setValue(true);
         // TODO: Update Category or create new one
 
         // Reenable Button

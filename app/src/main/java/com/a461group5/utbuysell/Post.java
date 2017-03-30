@@ -33,7 +33,7 @@ public class Post {
         this.categories = new HashMap<>();
         for (String c : categories) {
             c = c.trim();
-            String category = c.substring(0, 1).toUpperCase() + c.substring(1).toLowerCase();
+            String category = c.toLowerCase();
             this.categories.put(category, true);
         }
     }
