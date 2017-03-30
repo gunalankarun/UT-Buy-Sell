@@ -32,8 +32,7 @@ public class Post {
         this.price = price;
         this.categories = new HashMap<>();
         for (String c : categories) {
-            c = c.trim();
-            String category = c.toLowerCase();
+            String category = c.trim().toLowerCase();
             this.categories.put(category, true);
         }
     }

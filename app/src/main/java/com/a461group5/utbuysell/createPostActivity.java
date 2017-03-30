@@ -96,11 +96,15 @@ public class createPostActivity extends AppCompatActivity {
         Post post = new Post(title, description, user.getUid(), price, categories);
         mDatabase.child("posts").child(key).setValue(post);
 
-
-
         // Add post reference to User
         mDatabase.child("users").child(user.getUid()).child("posts").child(key).setValue(true);
-        // TODO: Update Category or create new one
+
+        // Add post reference to Category
+        for (String c : categories){
+            String category = c.trim().toLowerCase();
+            mDatabase.child("categories").child(category).child(key).setValue(true);
+        }
+
 
         // Reenable Button
         mSubmitButton.setEnabled(true);
