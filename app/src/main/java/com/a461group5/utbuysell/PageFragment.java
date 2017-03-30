@@ -16,14 +16,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -232,6 +230,8 @@ public class PageFragment extends Fragment {
                 displayEmail.setText(user.getEmail());
             }
         }
+
+
     }
 
     /**

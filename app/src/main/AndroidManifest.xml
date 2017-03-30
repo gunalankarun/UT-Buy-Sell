@@ -32,6 +32,11 @@
             android:name=".createPostActivity"
             android:label="@string/title_activity_create_post">
         </activity>
+
+        <activity
+            android:name=".MessageActivity"
+            android:label="Send a message">
+        </activity>
     </application>
 
 </manifest>
