@@ -10,27 +10,24 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Category {
 
-    public String name;
-    public String description;
+    // name field isn't needed because it will be the UID used
     public Map<String, Boolean> posts;
 
     public Category() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Category(String name, String description, String postId) {
-        this.name = name.trim().toLowerCase();
-        this.description = description;
+    public Category(String[] postIds) {
         this.posts = new HashMap<>();
-        this.posts.put(postId, true);
+        for (String postId : postIds) {
+            this.posts.put(postId, true);
+        }
     }
 
     // [START post_to_map]
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("name", name);
-        result.put("description", description);
         result.put("posts", posts);
 
         return result;
