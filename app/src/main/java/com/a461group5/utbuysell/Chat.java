@@ -30,5 +30,4 @@ public class Chat {
         users.put(user2ID, true);
     }
 
-
 }
