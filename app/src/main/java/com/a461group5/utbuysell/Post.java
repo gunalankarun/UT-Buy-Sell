@@ -31,7 +31,9 @@ public class Post {
         this.buyer = "";
         this.price = price;
         this.categories = new HashMap<>();
-        for (String category : categories) {
+        for (String c : categories) {
+            c = c.trim();
+            String category = c.substring(0, 1).toUpperCase() + c.substring(1).toLowerCase();
             this.categories.put(category, true);
         }
     }

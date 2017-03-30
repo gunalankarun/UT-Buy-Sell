@@ -18,11 +18,11 @@ public class Category {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Category(String name, String description, String postid) {
-        this.name = name;
+    public Category(String name, String description, String postId) {
+        this.name = name.trim().substring(0, 1).toUpperCase() + name.trim().substring(1).toLowerCase();
         this.description = description;
         this.posts = new HashMap<>();
-        this.posts.put(postid, true);
+        this.posts.put(postId, true);
     }
 
     // [START post_to_map]
