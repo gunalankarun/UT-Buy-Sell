@@ -77,7 +77,7 @@ public class MessageAdapter extends BaseAdapter {
         Chat.Message message = messages.get(i).first;
 
         TextView txtMessage = (TextView) convertView.findViewById(R.id.txtMessage);
-        txtMessage.setText(message.getTextBody());
+        txtMessage.setText(message.getBody());
 
         return convertView;
     }

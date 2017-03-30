@@ -1,5 +1,7 @@
 package com.a461group5.utbuysell;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +26,7 @@ public class Chat {
             this.receiverId = receiverId;
         }
 
-        public String getTextBody() {
+        public String getBody() {
             return body;
         }
 
@@ -68,6 +70,7 @@ public class Chat {
     }
 
 
+    @Exclude
     public Chat.Message getLastMessage() {
         return messages.get(messages.size() - 1);
     }

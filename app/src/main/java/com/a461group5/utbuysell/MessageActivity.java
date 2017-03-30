@@ -48,21 +48,7 @@ public class MessageActivity extends Activity {
 
 
         path = "chats/" + chatId;
-
-
         mDatabase = FirebaseDatabase.getInstance().getReference(path);
-
-//        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snap) {
-//                chat = snap.getValue(Chat.class);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError e) { }
-//        });
-
-
 
 
         ValueEventListener chatListener = new ValueEventListener() {
@@ -70,14 +56,21 @@ public class MessageActivity extends Activity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Chat object and use the values to update the UI
                  chat = dataSnapshot.getValue(Chat.class);
-                if (firstTime) {
-                    for (Chat.Message m : chat.getMessages()) {
-                        displayMessage(m);
+
+
+                //Need to check if this first time this chat has been added to database
+                //If so then there are no messages and we shouldn't try to access the messages list
+                if (chat.getMessages() != null) {
+                    if (firstTime ) {
+                        for (Chat.Message m : chat.getMessages()) {
+                            displayMessage(m);
+                        }
+                        firstTime = false;
+                    } else {
+                        displayMessage(chat.getLastMessage());
                     }
-                    firstTime = false;
-                } else {
-                    displayMessage(chat.getLastMessage());
                 }
+
             }
 
             @Override
