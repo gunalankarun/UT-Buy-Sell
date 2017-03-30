@@ -97,7 +97,7 @@ public class createPostActivity extends AppCompatActivity {
         mDatabase.child("posts").child(key).setValue(post);
 
         // Add post reference to User
-        mDatabase.child("users").child(user.getUid()).child("posts").child(key).setValue(true);
+        mDatabase.child("users").child(user.getUid()).child("sellerPosts").child(key).setValue(true);
 
         // Add post reference to Category
         for (String c : categories){
