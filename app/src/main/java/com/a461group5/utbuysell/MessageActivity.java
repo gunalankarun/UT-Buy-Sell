@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import com.a461group5.utbuysell.models.Chat;
+import com.a461group5.utbuysell.adapters.MessageAdapter;
 
 public class MessageActivity extends Activity {
     private String chatId;
