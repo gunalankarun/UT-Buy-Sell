@@ -4,15 +4,9 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.AssetFileDescriptor;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -34,8 +28,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +44,6 @@ public class CreatePostActivity extends AppCompatActivity {
     private Button mPostPictures;
 
     private StorageReference mStorageRef;
-
-    private Uri outputFileUri;
-    //private Uri selectedImageUri;
-    private final int SELECT_PICTURE = 1;
     private Uri mOutputFileUri;
 
     @Override
@@ -161,24 +149,6 @@ public class CreatePostActivity extends AppCompatActivity {
                     mOutputFileUri = data == null ? null : data.getData();
                 }
 
-                StorageReference photoRef = mStorageRef.child("postImages").child("5").child(getUniqueName());
-                photoRef.putFile(mOutputFileUri)
-                        .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(CreatePostActivity.this, "Image Upload Success",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addOnFailureListener(this, new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                Toast.makeText(CreatePostActivity.this, "Image Upload ERROR",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-
             }
         }
     }
@@ -203,12 +173,12 @@ public class CreatePostActivity extends AppCompatActivity {
         }
 
 //        // Image detection
-//        if (selectedImageUri == null) {
-//            Toast.makeText(CreatePostActivity.this, "Please select an Image",
-//                    Toast.LENGTH_SHORT).show();
-//            mSubmitButton.setEnabled(true);
-//            return;
-//        }
+        if (mOutputFileUri == null) {
+            Toast.makeText(CreatePostActivity.this, "Please select an Image",
+                    Toast.LENGTH_SHORT).show();
+            mSubmitButton.setEnabled(true);
+            return;
+        }
 
         int price = Integer.parseInt(priceText);
         String[] categories = categoriesText.split(",");
@@ -237,24 +207,26 @@ public class CreatePostActivity extends AppCompatActivity {
             mDatabase.child("categories").child(category).child(key).setValue(true);
         }
 
-        // TODO: Store image in storage and save path
-//        StorageReference photoRef = mStorageRef.child("postImages").child(key).child(selectedImageUri.getLastPathSegment());
-//        photoRef.putFile(selectedImageUri)
-//                .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        Toast.makeText(CreatePostActivity.this, "Image Upload Success",
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//                .addOnFailureListener(this, new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception exception) {
-//                        Toast.makeText(CreatePostActivity.this, "Image Upload ERROR",
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-
+        // Saves Picture into storage
+        String uniqueName = getUniqueName();
+        StorageReference photoRef = mStorageRef.child("postImages").child(key).child(uniqueName);
+        photoRef.putFile(mOutputFileUri)
+                .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(CreatePostActivity.this, "Image Upload Success",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(CreatePostActivity.this, "Image Upload ERROR",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        uniqueName = uniqueName.substring(0,uniqueName.indexOf("."));
+        mDatabase.child("posts").child(key).child("imagePaths").child(uniqueName).setValue(true);
 
         // Reenable Button
         mSubmitButton.setEnabled(true);
