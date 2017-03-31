@@ -36,6 +36,12 @@
         android:textAlignment="center" />
 
     <Button
+        android:id="@+id/upload_pic_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Upload Profile Picture" />
+
+    <Button
         android:id="@+id/log_out_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

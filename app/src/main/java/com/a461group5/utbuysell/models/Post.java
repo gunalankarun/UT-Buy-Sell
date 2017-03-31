@@ -18,6 +18,7 @@ public class Post {
     public String buyer;
     public int price;
     public Map<String, Boolean> categories;
+    public Map<String, Boolean> imagePaths;
 
     public Post() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
@@ -35,6 +36,7 @@ public class Post {
             String category = c.trim().toLowerCase();
             this.categories.put(category, true);
         }
+        this.imagePaths = new HashMap<>();
     }
 
     // [START post_to_map]
@@ -47,6 +49,7 @@ public class Post {
         result.put("seller", seller);
         result.put("buyer", buyer);
         result.put("price", price);
+        result.put("categories", categories);
         result.put("categories", categories);
 
         return result;
