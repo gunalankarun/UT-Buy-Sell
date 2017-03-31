@@ -1,4 +1,4 @@
-package com.a461group5.utbuysell;
+package com.a461group5.utbuysell.adapters;
 
 import android.app.Activity;
 import android.util.Pair;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.a461group5.utbuysell.R;
 import com.a461group5.utbuysell.models.Chat;
 
 import java.util.ArrayList;
