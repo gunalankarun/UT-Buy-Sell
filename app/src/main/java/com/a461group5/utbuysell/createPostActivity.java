@@ -14,8 +14,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.a461group5.utbuysell.models.Post;
 
-public class createPostActivity extends AppCompatActivity {
+public class CreatePostActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     private EditText mtitleField;
@@ -55,8 +56,8 @@ public class createPostActivity extends AppCompatActivity {
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(createPostActivity.this, MainActivity.class);
-                createPostActivity.this.startActivity(myIntent);
+                Intent myIntent = new Intent(CreatePostActivity.this, MainActivity.class);
+                CreatePostActivity.this.startActivity(myIntent);
             }
         });
     }
@@ -72,7 +73,7 @@ public class createPostActivity extends AppCompatActivity {
 
         // All are required
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(priceText) || TextUtils.isEmpty(categoriesText)) {
-            Toast.makeText(createPostActivity.this, "All fields are required",
+            Toast.makeText(CreatePostActivity.this, "All fields are required",
                     Toast.LENGTH_SHORT).show();
             mSubmitButton.setEnabled(true);
             return;
@@ -85,7 +86,7 @@ public class createPostActivity extends AppCompatActivity {
 
         // Check if User is verified
         if (!user.isEmailVerified()) {
-            Toast.makeText(createPostActivity.this, "ERROR: You must verify your email in order to Post.",
+            Toast.makeText(CreatePostActivity.this, "ERROR: You must verify your email in order to Post.",
                     Toast.LENGTH_SHORT).show();
             mSubmitButton.setEnabled(true);
             return;
@@ -109,10 +110,10 @@ public class createPostActivity extends AppCompatActivity {
         // Reenable Button
         mSubmitButton.setEnabled(true);
 
-        Toast.makeText(createPostActivity.this, "Created Post!",
+        Toast.makeText(CreatePostActivity.this, "Created Post!",
                 Toast.LENGTH_SHORT).show();
-        Intent myIntent = new Intent(createPostActivity.this, MainActivity.class);
-        createPostActivity.this.startActivity(myIntent);
+        Intent myIntent = new Intent(CreatePostActivity.this, MainActivity.class);
+        CreatePostActivity.this.startActivity(myIntent);
 
 
 

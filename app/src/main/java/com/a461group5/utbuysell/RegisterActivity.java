@@ -28,6 +28,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.a461group5.utbuysell.models.User;
+
 /**
  * A register screen that allows users to enter info to register an account.
  */

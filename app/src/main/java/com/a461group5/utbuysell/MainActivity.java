@@ -22,6 +22,9 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.a461group5.utbuysell.fragments.PageFragment;
+import com.a461group5.utbuysell.adapters.ViewPagerAdapter;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -120,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent myIntent = new Intent(MainActivity.this, createPostActivity.class);
+                Intent myIntent = new Intent(MainActivity.this, CreatePostActivity.class);
                 //myIntent.putExtra("key", value); //Optional parameters
                 MainActivity.this.startActivity(myIntent);
             }

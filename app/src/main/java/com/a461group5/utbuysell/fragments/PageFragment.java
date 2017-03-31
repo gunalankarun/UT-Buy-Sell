@@ -1,4 +1,4 @@
-package com.a461group5.utbuysell;
+package com.a461group5.utbuysell.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.a461group5.utbuysell.R;
+import com.a461group5.utbuysell.adapters.ListingsAdapter;
 
 import java.util.ArrayList;
 

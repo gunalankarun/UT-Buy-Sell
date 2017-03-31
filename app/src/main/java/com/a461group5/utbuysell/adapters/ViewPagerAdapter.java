@@ -1,9 +1,10 @@
-package com.a461group5.utbuysell;
+package com.a461group5.utbuysell.adapters;
 
 import android.graphics.pdf.PdfDocument;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
+import com.a461group5.utbuysell.fragments.PageFragment;
 
 import java.util.ArrayList;
 

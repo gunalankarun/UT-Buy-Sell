@@ -17,9 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * Created by irfanhasan on 3/29/17.
- */
+import com.a461group5.utbuysell.models.Chat;
 
 public class MessageActivity extends Activity {
     private String chatId;

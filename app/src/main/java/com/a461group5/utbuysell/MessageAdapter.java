@@ -8,12 +8,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.a461group5.utbuysell.models.Chat;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by irfanhasan on 3/30/17.
- */
 
 public class MessageAdapter extends BaseAdapter {
 

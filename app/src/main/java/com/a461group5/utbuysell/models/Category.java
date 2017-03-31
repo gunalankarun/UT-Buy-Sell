@@ -1,4 +1,4 @@
-package com.a461group5.utbuysell;
+package com.a461group5.utbuysell.models;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
