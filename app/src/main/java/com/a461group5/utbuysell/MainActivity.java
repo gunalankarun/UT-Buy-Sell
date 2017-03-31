@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -14,16 +15,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.a461group5.utbuysell.fragments.PageFragment;
 import com.a461group5.utbuysell.adapters.ViewPagerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
@@ -45,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "EmailPassword";
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private StorageReference mStorageRef;
+    private DatabaseReference mDatabase;
 
 
     @Override
@@ -54,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 .getBoolean("translucentNavigation", false);
         setTheme(enabledTranslucentNavigation ? R.style.AppTheme_TranslucentNavigation : R.style.AppTheme);
         setContentView(R.layout.activity_home);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -74,6 +87,44 @@ public class MainActivity extends AppCompatActivity {
         };
 
         initUI();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            Uri mOutputFileUri = null;
+            if (data != null) {
+                mOutputFileUri = data.getData();
+            }
+
+            if (mOutputFileUri == null) {
+                Toast.makeText(MainActivity.this, "Image Upload Canceled",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                StorageReference photoRef = mStorageRef.child("profilePictures").child(user.getUid()).child("profilePicture.jpg");
+                photoRef.putFile(mOutputFileUri)
+                        .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Toast.makeText(MainActivity.this, "Image Upload Success",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(this, new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Toast.makeText(MainActivity.this, "Image Upload ERROR",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                mDatabase.child("users").child(user.getUid()).child("proPicturePath").setValue("/profilePictures/"+user.getUid()+"profilePicture");
+
+                Toast.makeText(MainActivity.this, "Uploaded Profile Picture",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override

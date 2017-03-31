@@ -1,5 +1,6 @@
 package com.a461group5.utbuysell.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -84,6 +85,16 @@ public class PageFragment extends Fragment {
      * TODO: profile tab does not refresh (does not update user info such as not-verified/verified)
      */
     private void initProfile(View view) {
+
+        Button uploadPicButton = (Button) view.findViewById(R.id.upload_pic_button);
+        uploadPicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openImageIntent();
+            }
+        });
+
+
         Button logOutButton = (Button) view.findViewById(R.id.log_out_button);
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,6 +184,20 @@ public class PageFragment extends Fragment {
      */
     private void initTransactions(View view) {
 
+    }
+
+    private void openImageIntent() {
+
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Source");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, 42);
     }
 
     /**
