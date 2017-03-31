@@ -5,14 +5,16 @@
                 >
 
     <ListView
-            android:id="@+id/listMessages"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:transcriptMode="alwaysScroll"
-            android:layout_above="@+id/divider"
-            android:padding="0dip"
-            android:divider="@null"
-            android:dividerHeight="0dp" android:stackFromBottom="true" tools:listitem="@layout/message_left"/>
+        android:id="@+id/listMessages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/divider"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:padding="0dip"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
+        tools:listitem="@layout/message_left" />
     
     <RelativeLayout 
         android:id="@+id/divider"
