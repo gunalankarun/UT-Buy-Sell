@@ -35,10 +35,10 @@ import java.util.List;
 public class CreatePostActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
-    private EditText mtitleField;
-    private EditText mdescriptionField;
-    private EditText mpriceField;
-    private EditText mcategoriesField;
+    private EditText mTitleField;
+    private EditText mDescriptionField;
+    private EditText mPriceField;
+    private EditText mCategoriesField;
     private Button mSubmitButton;
     private Button mCancelButton;
     private Button mPostPictures;
@@ -59,10 +59,10 @@ public class CreatePostActivity extends AppCompatActivity {
 
     private void initUI() {
 
-        mtitleField = (EditText) findViewById(R.id.create_post_title);
-        mdescriptionField = (EditText) findViewById(R.id.create_post_description);
-        mpriceField = (EditText) findViewById(R.id.create_post_price);
-        mcategoriesField = (EditText) findViewById(R.id.create_post_categories);
+        mTitleField = (EditText) findViewById(R.id.create_post_title);
+        mDescriptionField = (EditText) findViewById(R.id.create_post_description);
+        mPriceField = (EditText) findViewById(R.id.create_post_price);
+        mCategoriesField = (EditText) findViewById(R.id.create_post_categories);
         mPostPictures = (Button) findViewById(R.id.create_post_images);
         mPostPictures.setOnClickListener(new View.OnClickListener() {
             //@Override
@@ -159,10 +159,10 @@ public class CreatePostActivity extends AppCompatActivity {
         // Disable submit button to avoid double submits
         mSubmitButton.setEnabled(false);
 
-        String title = mtitleField.getText().toString().trim();
-        String description = mdescriptionField.getText().toString().trim();
-        String priceText = mpriceField.getText().toString().trim();
-        String categoriesText = mcategoriesField.getText().toString().trim();
+        String title = mTitleField.getText().toString().trim();
+        String description = mDescriptionField.getText().toString().trim();
+        String priceText = mPriceField.getText().toString().trim();
+        String categoriesText = mCategoriesField.getText().toString().trim();
 
         // All are required
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(priceText) || TextUtils.isEmpty(categoriesText)) {
