@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
-                mDatabase.child("users").child(user.getUid()).child("proPicturePath").setValue("/profilePictures/"+user.getUid()+"profilePicture");
+                mDatabase.child("users").child(user.getUid()).child("profilePicturePath").setValue("/profilePictures/"+user.getUid()+"/profilePicture");
 
                 Toast.makeText(MainActivity.this, "Uploaded Profile Picture",
                         Toast.LENGTH_SHORT).show();
