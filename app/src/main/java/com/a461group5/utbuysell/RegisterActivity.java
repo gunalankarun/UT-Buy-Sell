@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.a461group5.utbuysell.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -27,8 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import com.a461group5.utbuysell.models.User;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 /**
  * A register screen that allows users to enter info to register an account.
@@ -111,8 +111,12 @@ public class RegisterActivity extends AppCompatActivity  {
                     //store user info into database
                     DatabaseReference mDatabase;
                     mDatabase = FirebaseDatabase.getInstance().getReference();
-                    User userDB = new User(user.getEmail(), FIRST_NAME, LAST_NAME);
-                    mDatabase.child("users").child(user.getUid()).setValue(userDB);
+                    String token = FirebaseInstanceId.getInstance().getToken();
+                    if (token != null) {
+                        User userDB = new User(user.getEmail(), FIRST_NAME, LAST_NAME, token);
+                        mDatabase.child("users").child(user.getUid()).setValue(userDB);
+                    }
+
 
 
 
