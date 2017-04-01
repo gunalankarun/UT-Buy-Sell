@@ -11,6 +11,7 @@ public class User {
     String email;
     String first_name;
     String last_name;
+    String token;
     Map<String, Boolean>  seller_posts;
     Map<String, Boolean> buyer_posts;
     Map<String, Boolean> chats;
@@ -27,5 +28,7 @@ public class User {
         buyer_posts = new HashMap<String, Boolean>();
         chats = new HashMap<String, Boolean>();
     }
+
+  
 
 }
