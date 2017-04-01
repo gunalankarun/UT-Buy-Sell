@@ -30,6 +30,4 @@ public class User {
         chats = new HashMap<String, Boolean>();
     }
 
-
-
 }
