@@ -45,6 +45,7 @@ public class MessageActivity extends Activity {
         chatId = intent.getStringExtra("CHAT_ID");
 
 
+
         path = "chats/" + chatId;
         mDatabase = FirebaseDatabase.getInstance().getReference(path);
         mDatabase.setValue(new Chat("fbcUCSk389fpxtrh4nEQdfr2JM73", "RkB2gZcoRedfdIknTcA0dS8Oxgf2"));
