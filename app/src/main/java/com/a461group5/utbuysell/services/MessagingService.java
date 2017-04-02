@@ -9,9 +9,12 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.a461group5.utbuysell.MainActivity;
+import com.a461group5.utbuysell.MessageActivity;
+import com.a461group5.utbuysell.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.Map;
 
 /**
  * Created by irfanhasan on 3/31/17.
@@ -63,7 +66,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-
+        sendNotification(remoteMessage.getData());
     }
     // [END receive_message]
 
@@ -91,18 +94,30 @@ public class MessagingService extends FirebaseMessagingService {
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void sendNotification(Map<String, String>  payload) {
+        /**
+         * Payload structure:
+         * notification: {
+             title: `{senderName} sent you a message.`,
+            chatId: `{chatKey}`,
+            body: `{messageBody}`
+         }
+         */
+        Intent intent = new Intent(this, MessageActivity.class);
+        String chatId = payload.get("chatId").toString();
+        String title = payload.get("title").toString();
+        String body = payload.get("body").toString();
+        intent.putExtra("CHAT_ID", chatId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle("FCM Message")
-                .setContentText(messageBody)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setSmallIcon(R.mipmap.ic_launcher) //TODO: make an actual notification icon
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
@@ -110,6 +125,10 @@ public class MessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        try {
+            notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        } catch (Exception e) {
+
+        }
     }
 }
