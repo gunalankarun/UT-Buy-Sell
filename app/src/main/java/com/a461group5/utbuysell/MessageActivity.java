@@ -19,9 +19,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import com.a461group5.utbuysell.models.Chat;
-import com.a461group5.utbuysell.adapters.MessageAdapter;
-
 public class MessageActivity extends Activity {
     private String chatId;
     private EditText messageBodyField;
@@ -48,9 +45,10 @@ public class MessageActivity extends Activity {
         chatId = intent.getStringExtra("CHAT_ID");
 
 
+
         path = "chats/" + chatId;
         mDatabase = FirebaseDatabase.getInstance().getReference(path);
-
+        mDatabase.setValue(new Chat("fbcUCSk389fpxtrh4nEQdfr2JM73", "RkB2gZcoRedfdIknTcA0dS8Oxgf2"));
 
         ValueEventListener chatListener = new ValueEventListener() {
             @Override
