@@ -14,4 +14,10 @@
         android:textSize="24sp"
         android:textColor="@color/colorAccent" />
 
+    <Button
+        android:id="@+id/temp_goToChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go to Chat" />
+
 </LinearLayout>

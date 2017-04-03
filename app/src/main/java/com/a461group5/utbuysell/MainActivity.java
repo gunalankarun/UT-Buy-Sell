@@ -205,10 +205,6 @@ public class MainActivity extends AppCompatActivity {
                 if (position == 0) {
 //                    bottomNavigation.setNotification("", 1);
                     floatingButtonAnimateIn();
-                } else if (position == 2) {
-                    Intent intent = new Intent(MainActivity.this, MessageActivity.class);
-                    intent.putExtra("CHAT_ID", "chatTestKey");
-                    MainActivity.this.startActivity(intent);
                 } else {
                     if (floatingActionButton.getVisibility() == View.VISIBLE) {
                         floatingButtonAnimateOut();

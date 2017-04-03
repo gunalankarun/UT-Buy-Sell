@@ -190,6 +190,17 @@ public class PageFragment extends Fragment {
     private void initInbox(View view) {
         TextView inboxHeader = (TextView) view.findViewById(R.id.inbox_header);
         inboxHeader.setText("Inbox");
+
+        Button goToChat = (Button) view.findViewById(R.id.temp_goToChat);
+        goToChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), MessageActivity.class);
+                intent.putExtra("CHAT_ID", "chatTestKey");
+                startActivity(intent);
+            }
+        });
+
     }
 
     /**
