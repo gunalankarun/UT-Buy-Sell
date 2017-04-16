@@ -1,14 +1,12 @@
 package com.a461group5.utbuysell;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ListView;
+import android.support.v7.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class InboxActivity extends AppCompatActivity {
-    private ListView allMessages;
+    //private ListView allMessages;
     private String chatId;
     FirebaseUser user;
     private String path;
@@ -19,7 +17,7 @@ public class InboxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
 
-        allMessages = ListView (findViewById(R.id.listMessages));
-        mDatabase = FirebaseDatabase.getInstance().getReference(path);
+       //allMessages = ListView (findViewById(R.id.listMessages));
+        //mDatabase = FirebaseDatabase.getInstance().getReference(path);
     }
 }
