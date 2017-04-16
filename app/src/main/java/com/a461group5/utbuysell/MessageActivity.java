@@ -3,6 +3,7 @@ package com.a461group5.utbuysell;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -44,42 +45,12 @@ public class MessageActivity extends Activity {
         Intent intent = getIntent();
         chatId = intent.getStringExtra("CHAT_ID");
 
-
-
-        path = "chats/" + chatId;
-        mDatabase = FirebaseDatabase.getInstance().getReference(path);
-        //mDatabase.setValue(new Chat("fbcUCSk389fpxtrh4nEQdfr2JM73", "RkB2gZcoRedfdIknTcA0dS8Oxgf2")); //debugging only
-
-        ValueEventListener chatListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Chat object and use the values to update the UI
-                 chat = dataSnapshot.getValue(Chat.class);
-
-
-                //Need to check if this first time this chat has been added to database
-                //If so then there are no messages and we shouldn't try to access the messages list
-                if (chat.getMessages() != null) {
-                    if (firstTime ) {
-                        for (Chat.Message m : chat.getMessages()) {
-                            displayMessage(m);
-                        }
-                        firstTime = false;
-                    } else {
-                        displayMessage(chat.getLastMessage());
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w("TAG", "loadPost:onCancelled", databaseError.toException());
-                // ...
-            }
-        };
-        mDatabase.addValueEventListener(chatListener);
+        //Need to distinguish if this is the first time starting this chat
+        if (chatId != null) {
+            initDatabaseRef(chatId);
+        } else {
+            mDatabase = FirebaseDatabase.getInstance().getReference("chats");
+        }
 
         messageBodyField = (EditText) findViewById(R.id.messageBodyField);
 
@@ -92,6 +63,10 @@ public class MessageActivity extends Activity {
                 if (messageBody.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please enter a message", Toast.LENGTH_LONG).show();
                     return;
+                }
+                if (chatId == null) {
+                    chatId = mDatabase.push().getKey(); //create a new chat in DB
+                    initDatabaseRef(chatId);
                 }
                 sendMessage(messageBody);
                 messageBodyField.getText().clear();
@@ -127,5 +102,46 @@ public class MessageActivity extends Activity {
         super.onDestroy();
     }
 
+    /**
+     * Sets FirebaseDB reference to correct path (ie make it point to where current chat messages are stored)
+     * @param chatId the id that points to the chat thatthe  current instance of this activity represents
+     */
+    private void initDatabaseRef(@NonNull String chatId) {
+        path = "chats/" + chatId;
+        mDatabase = FirebaseDatabase.getInstance().getReference(path);
+        //mDatabase.setValue(new Chat("fbcUCSk389fpxtrh4nEQdfr2JM73", "RkB2gZcoRedfdIknTcA0dS8Oxgf2")); //debugging only
 
+        ValueEventListener chatListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Chat object and use the values to update the UI
+                chat = dataSnapshot.getValue(Chat.class);
+
+
+                //Need to check if this first time this chat has been added to database
+                //If so then there are no messages and we shouldn't try to access the messages list
+                if (chat.getMessages() != null) {
+                    //also this listener triggers once as soon as it is registered
+                    //so we will load past messages at this time
+                    if (firstTime) {
+                        for (Chat.Message m : chat.getMessages()) {
+                            displayMessage(m);
+                        }
+                        firstTime = false;
+                    } else {
+                        displayMessage(chat.getLastMessage());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("TAG", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+        mDatabase.addValueEventListener(chatListener);
+    }
 }
