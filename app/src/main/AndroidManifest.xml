@@ -14,50 +14,38 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-
-        <activity
-            android:name=".LoginActivity">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_activity_register">
-        </activity>
-
+            android:label="@string/title_activity_register"></activity>
         <activity
             android:name=".CreatePostActivity"
-            android:label="@string/title_activity_create_post">
-        </activity>
-
+            android:label="@string/title_activity_create_post"></activity>
         <activity
             android:name=".ViewPostActivity"
-            android:label="View Post">
-        </activity>
-
+            android:label="View Post"></activity>
         <activity
             android:name=".MessageActivity"
-            android:label="Send a message">
-        </activity>
+            android:label="Send a message"></activity>
 
-        <service
-            android:name=".services.MessagingService">
+        <service android:name=".services.MessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.InstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-
-        <service
-            android:name=".services.InstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
-
+        <activity android:name=".InboxActivity"></activity>
     </application>
 
 </manifest>
