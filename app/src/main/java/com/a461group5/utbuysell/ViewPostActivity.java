@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,8 +32,14 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private void initUI() {
 
-        TextView title = (TextView) findViewById(R.id.view_post_title);
-        title.setText("Title");
+        TextView item_name = (TextView) findViewById(R.id.view_post_name);
+        item_name.setText("Item Name");
+        TextView description = (TextView) findViewById(R.id.view_post_description);
+        description.setText("Description of Item or Items being sold.");
+        TextView seller_name = (TextView) findViewById(R.id.view_post_seller);
+        seller_name.setText("Seller Name");
+        ImageView image = (ImageView) findViewById(R.id.view_post_picture1);
+
 
     }
 }
