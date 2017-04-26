@@ -45,7 +45,13 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".InboxActivity"></activity>
+        <activity android:name=".InboxActivity">
+
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
