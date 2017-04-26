@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.a461group5.utbuysell.RegisterActivity">
+    tools:context="com.a461group5.utbuysell.ViewPostActivity">
 
     <ScrollView
         android:id="@+id/view_post_form"
@@ -22,19 +22,123 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/view_post_title"
+                android:id="@+id/view_post_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
                 android:textSize="24sp"
+                android:text="Textview"
+                android:textAlignment="center"
                 android:textColor="@color/colorAccent" />
+
+            <TextView
+                android:id= "@+id/view_post_seller"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Textview"
+                android:textAlignment="center"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                />
+
+            <TextView
+                android:id= "@+id/view_post_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Textview"
+                android:textAlignment="center"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                />
+            <TextView
+                android:id= "@+id/view_post_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Textview"
+                android:textAlignment="center"
+                />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/view_post_picture1"
+
+                        />
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/view_post_picture2"
+                        />
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/view_post_picture3"
+                        />
+
+                </LinearLayout>
+            </ScrollView>
+
+            <TextView
+                android:id= "@+id/view_post_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Textview"
+                android:textAlignment="center"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/view_post_meeting_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Meeting Location"
+                    android:inputType="text"
+                    android:textColorHint="#000000"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/text_style"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/view_post_meeting_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Meeting Time"
+                    android:inputType="text"
+                    android:textColorHint="#000000"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/text_style"/>
+
+            </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/view_post_buy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Buy" />
+                android:text="Message Seller" />
 
         </LinearLayout>
     </ScrollView>

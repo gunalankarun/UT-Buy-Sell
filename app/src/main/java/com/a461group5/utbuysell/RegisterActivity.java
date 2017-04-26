@@ -117,9 +117,6 @@ public class RegisterActivity extends AppCompatActivity  {
                         mDatabase.child("users").child(user.getUid()).setValue(userDB);
                     }
 
-
-
-
                     user.sendEmailVerification()
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
