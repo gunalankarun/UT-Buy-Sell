@@ -11,13 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:textSize="24sp"
-        android:textColor="@color/colorAccent" />
+        android:textColor="@color/colorAccent"
+        android:textSize="24sp" />
 
-    <Button
-        android:id="@+id/temp_goToChat"
+    <ListView
+        android:id="@+id/usersListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Go to Chat" />
+        android:layout_height="match_parent"
+        android:padding="16dp"></ListView>
 
 </LinearLayout>

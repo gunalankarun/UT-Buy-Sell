@@ -2,30 +2,27 @@ package com.a461group5.utbuysell;
 
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ListView;
-import android.widget.ArrayAdapter;
-import android.widget.AdapterView;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 
 public class InboxActivity extends AppCompatActivity {
     //private ListView allMessages;
     private String chatId;
     FirebaseUser user;
-    FirebaseDatabase mDatabase;
+    DatabaseReference mDatabase;
     private String userID;
     private String path;
     private ListView userMessage;
@@ -46,9 +43,9 @@ public class InboxActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         userID = user.getUid();
         Intent intent = getIntent();
-        path = "/users/{" + userID + "}/chats";
+        path = "/users/" + userID + "/chats";
 
-        mDatabase = FirebaseDatabase.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference(path);
         //chat_history = mDatabase.getReference(path);
         // returns the hashmap of chats that have started??
         chat_history = new HashMap<String, Boolean>();

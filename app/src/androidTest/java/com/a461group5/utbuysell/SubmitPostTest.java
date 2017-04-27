@@ -1,7 +1,5 @@
 package com.a461group5.utbuysell;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.google.android.gms.tasks.Task;
@@ -21,18 +19,9 @@ import static org.junit.Assert.assertNotNull;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
-    @Test
-    public void useAppContext() throws Exception {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-
-        assertEquals("com.a461group5.utbuysell", appContext.getPackageName());
-    }
-
+public class SubmitPostTest {
     private FirebaseAuth mAuth;
-
-
+    
     @Test
     public void validateLogIn() {
         mAuth = FirebaseAuth.getInstance();

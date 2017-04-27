@@ -20,13 +20,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.a461group5.utbuysell.MainActivity;
-import com.a461group5.utbuysell.MessageActivity;
+import com.a461group5.utbuysell.R;
 import com.a461group5.utbuysell.ViewPostActivity;
+import com.a461group5.utbuysell.adapters.ListingsAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.a461group5.utbuysell.R;
-import com.a461group5.utbuysell.adapters.ListingsAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -190,18 +190,25 @@ public class PageFragment extends Fragment {
     private void initInbox(View view) {
         TextView inboxHeader = (TextView) view.findViewById(R.id.inbox_header);
         inboxHeader.setText("Inbox");
+        DatabaseReference mDatabase;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String path = path = "/users/" + user.getUid() + "/chats";
+        mDatabase = FirebaseDatabase.getInstance().getReference(path);
 
-        Button goToChat = (Button) view.findViewById(R.id.temp_goToChat);
-        goToChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MessageActivity.class);
-                intent.putExtra("CHAT_ID", "chatTestKey");
-                startActivity(intent);
-            }
-        });
 
+
+
+//        Button goToChat = (Button) view.findViewById(R.id.temp_goToChat);
+//        goToChat.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), MessageActivity.class);
+//                intent.putExtra("CHAT_ID", "chatTestKey");
+//                startActivity(intent);
+//            }
+//        });
     }
+
 
     /**
      * Init Transactions View
