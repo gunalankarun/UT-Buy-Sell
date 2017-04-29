@@ -1,9 +1,8 @@
 package com.a461group5.utbuysell;
 
-import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.a461group5.utbuysell.models.Post;
+import com.a461group5.utbuysell.models.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,7 +13,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static android.content.ContentValues.TAG;
 import static org.junit.Assert.assertEquals;
@@ -23,19 +21,16 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Instrumentation test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Created by irfanhasan on 4/27/17.
  */
-@RunWith(AndroidJUnit4.class)
-public class SubmitPostTest {
+
+public class SubmitUserInfoTest {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    private static final String title = "test item";
-    private static final String description = "this is for testing";
-    private static final String[] categories = {"electronics", "shoes", "clothes"};
-    private static final int price = 20;
-    private Post post;
+    private static final String email = "testing@utexas.edu";
+    private static final String first_name = "test";
+    private static final String last_name = "test";
+    private User userModel;
     boolean readDone;
 
     @Before
@@ -50,12 +45,13 @@ public class SubmitPostTest {
 
 
     @Test
-    public void sendPost() {
+    public void sendUser() {
         readDone = false;
         //DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         // Save Post
         //String key = mDatabase.child("posts").push().getKey();
-        post = new Post(title, description, user.getUid(), price, categories);
+        String token = "abCnbUFYma12AAmm901BbbsbalMKffe";
+        userModel = new User(email, first_name,last_name,token);
         //mDatabase = FirebaseDatabase.getInstance().getReference("posts/" + key);
 
         readDone = true;
@@ -63,8 +59,8 @@ public class SubmitPostTest {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-                Post readPost = dataSnapshot.getValue(Post.class);
-                assertTrue(post.equals(readPost));
+                User readUser = dataSnapshot.getValue(User.class);
+                assertTrue(userModel.equals(readUser));
                 readDone = true;
             }
 
@@ -79,6 +75,6 @@ public class SubmitPostTest {
         };
         //mDatabase.addListenerForSingleValueEvent(postListener);
         while(!readDone);
-        assertTrue(post.title.equals(title));
+        assertTrue(userModel.getFirstName().equals(first_name));
     }
 }

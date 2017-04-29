@@ -3,7 +3,6 @@ package com.a461group5.utbuysell.models;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +54,15 @@ public class Post {
         return result;
     }
     // [END post_to_map]
+
+    @Exclude
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Post)) return false;
+        Post p = (Post) o;
+        return title.equals(p.title) && description.equals(p.description) && seller.equals(p.seller)
+                && price == p.price && categories.equals(p.categories);
+    }
 
 }
 // [END post_class]

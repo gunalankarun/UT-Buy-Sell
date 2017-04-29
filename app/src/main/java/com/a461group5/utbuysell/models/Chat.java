@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by irfanhasan on 3/29/17.
@@ -75,4 +76,6 @@ public class Chat {
         return messages.get(messages.size() - 1);
     }
 
+    @Exclude
+    public Set<String> getUsers() { return users.keySet(); }
 }

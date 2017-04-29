@@ -1,5 +1,7 @@
 package com.a461group5.utbuysell.models;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,4 +32,9 @@ public class User {
         chats = new HashMap<String, Boolean>();
     }
 
+    @Exclude
+    public String getFirstName()
+    {
+        return first_name;
+    }
 }
