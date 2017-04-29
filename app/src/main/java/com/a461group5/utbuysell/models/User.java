@@ -37,4 +37,9 @@ public class User {
     {
         return first_name;
     }
+
+    @Exclude
+    public String getName() {
+        return first_name + " " + last_name;
+    }
 }

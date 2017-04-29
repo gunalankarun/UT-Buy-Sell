@@ -26,6 +26,7 @@ public class MessageActivity extends Activity {
     private EditText messageBodyField;
     private String messageBody;
     private String path;
+    private String receiverId;
     private MessageAdapter messageAdapter;
     private ListView messagesList;
     private boolean firstTime = true;
@@ -45,7 +46,7 @@ public class MessageActivity extends Activity {
         //get chatId from the intent
         Intent intent = getIntent();
         chatId = intent.getStringExtra("CHAT_ID");
-
+        receiverId = intent.getStringExtra("REC_ID");
         //Need to distinguish if this is the first time starting this chat
         if (chatId != null) {
             initDatabaseRef(chatId);
@@ -68,11 +69,14 @@ public class MessageActivity extends Activity {
                 if (chatId == null) {
                     chatId = mDatabase.push().getKey(); //create a new chat in DB
                     initDatabaseRef(chatId);
-                    FirebaseDatabase.getInstance().getReference("users/" + user.getUid()).
+                    FirebaseDatabase.getInstance().getReference("users/" + receiverId).
                             addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    User user = dataSnapshot.getValue(User.class);
+                                    User u = dataSnapshot.getValue(User.class);
+                                    FirebaseDatabase.getInstance().getReference("users").
+                                            child(user.getUid()).child("chats").child(chatId).
+                                            setValue(u.getName());
                                 }
 
                                 @Override
@@ -122,8 +126,8 @@ public class MessageActivity extends Activity {
     private void initDatabaseRef(@NonNull String chatId) {
         path = "chats/" + chatId;
         mDatabase = FirebaseDatabase.getInstance().getReference(path);
-        //mDatabase.setValue(new Chat("fbcUCSk389fpxtrh4nEQdfr2JM73", "RkB2gZcoRedfdIknTcA0dS8Oxgf2")); //debugging only
-
+        chat = new Chat(receiverId, user.getUid());
+        mDatabase.setValue(chat);
         ValueEventListener chatListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

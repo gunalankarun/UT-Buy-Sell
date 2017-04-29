@@ -215,7 +215,7 @@ public class PageFragment extends Fragment {
         inboxListView = (ListView) view.findViewById(usersListView);
         inboxContext = getActivity().getApplicationContext();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String path = path = "/users/" + user.getUid() + "/chats";
+        String path = "/users/" + user.getUid() + "/chats";
         chatRef = FirebaseDatabase.getInstance().getReference(path);
 
 
