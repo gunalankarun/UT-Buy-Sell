@@ -36,9 +36,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -209,55 +209,20 @@ public class PageFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Post post = snapshot.getValue(Post.class);
-                    String key = snapshot.getKey();
-                    keyData.add(key);
-                    itemsData.add(post);
-                }
-                ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
-                recyclerView.setAdapter(adapter);
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        postsQuery.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Post post = snapshot.getValue(Post.class);
-                    itemsData.add(0, post);
                     String key = snapshot.getKey();
                     keyData.add(0, key);
-
+                    Post post = snapshot.getValue(Post.class);
+                    itemsData.add(0,post);
                 }
                 ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
                 recyclerView.setAdapter(adapter);
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
 
-                String commentKey = dataSnapshot.getKey();
-
-                // ...
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-
-
-                // ...
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-
-                // ...
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
 
 
     }
@@ -354,6 +319,30 @@ public class PageFragment extends Fragment {
         switch(myType) {
             case LISTINGS:
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
+
+                Query postsQuery = mDatabase.child("posts").orderByKey();
+
+
+                postsQuery.limitToFirst(50).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        keyData.clear();
+                        itemsData.clear();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String key = snapshot.getKey();
+                            keyData.add(0, key);
+                            Post post = snapshot.getValue(Post.class);
+                            itemsData.add(0,post);
+                        }
+                        ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
+                        recyclerView.setAdapter(adapter);
+
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
                 break;
             case TRANSACTIONS:
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
