@@ -7,10 +7,14 @@ import android.view.View;
 import android.widget.*;
 
 import com.a461group5.utbuysell.models.Post;
+import com.a461group5.utbuysell.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -103,6 +107,25 @@ public class ViewPostActivity extends AppCompatActivity {
 
         Toast.makeText(ViewPostActivity.this, "Favorited Post!",
                 Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void messageSeller() {
+        FirebaseDatabase.getInstance().getReference("posts/" + postId).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Post currentPost = dataSnapshot.getValue(Post.class);
+                        Intent i = new Intent(ViewPostActivity.this, MessageActivity.class);
+                        i.putExtra("sellerId", currentPost.seller);
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
     }
 }
