@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.a461group5.utbuysell.models.Post;
@@ -172,7 +171,7 @@ public class CreatePostActivity extends AppCompatActivity {
             return;
         }
 
-         // Image Required
+//        //Image Required
 //        if (mOutputFileUri == null) {
 //            Toast.makeText(CreatePostActivity.this, "Please select an Image",
 //                    Toast.LENGTH_SHORT).show();
@@ -227,7 +226,7 @@ public class CreatePostActivity extends AppCompatActivity {
                         }
                     });
 
-            uniqueName = uniqueName.substring(0,uniqueName.indexOf("."));
+            //uniqueName = uniqueName.substring(0,uniqueName.indexOf("."));
             mDatabase.child("posts").child(key).child("imagePaths").child(uniqueName).setValue(true);
         }
 
@@ -242,6 +241,6 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private String getUniqueName() {
-        return "img_"+ System.currentTimeMillis() + ".jpg";
+        return "img_"+ System.currentTimeMillis();
     }
 }

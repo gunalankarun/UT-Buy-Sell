@@ -62,6 +62,7 @@ public class PageFragment extends Fragment {
     private ListView inboxListView;
     private Context inboxContext;
     ArrayList<Post> itemsData = new ArrayList<Post>();
+    ArrayList<String> keyData = new ArrayList<String>();
     //////////////////////////////////////////////////
 
     private enum Type {
@@ -207,10 +208,15 @@ public class PageFragment extends Fragment {
         postsQuery.limitToFirst(50).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (Post snapshot : dataSnapshot.getValue(Post.class)) {
-                    Post post = snapshot;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Post post = snapshot.getValue(Post.class);
+                    String key = snapshot.getKey();
+                    keyData.add(key);
                     itemsData.add(post);
                 }
+                ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
+                recyclerView.setAdapter(adapter);
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -218,11 +224,35 @@ public class PageFragment extends Fragment {
         });
         postsQuery.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot) {
-                for (Post snapshot : dataSnapshot.getValue(Post.class)) {
-                    Post post = snapshot;
-                    itemsData.add(post);
+            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Post post = snapshot.getValue(Post.class);
+                    itemsData.add(0, post);
+                    String key = snapshot.getKey();
+                    keyData.add(0, key);
+
                 }
+                ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
+                recyclerView.setAdapter(adapter);
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+
+                String commentKey = dataSnapshot.getKey();
+
+                // ...
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+
+
+                // ...
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+
+                // ...
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -230,9 +260,6 @@ public class PageFragment extends Fragment {
         });
 
 
-
-        ListingsAdapter adapter = new ListingsAdapter(itemsData);
-        recyclerView.setAdapter(adapter);
     }
 
     /**
