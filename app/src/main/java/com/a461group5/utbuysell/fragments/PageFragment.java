@@ -215,31 +215,33 @@ public class PageFragment extends Fragment {
         inboxListView = (ListView) view.findViewById(usersListView);
         inboxContext = getActivity().getApplicationContext();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String path = path = "/users/" + user.getUid() + "/chats";
+        String path = "/users/" + user.getUid() + "/chats";
         chatRef = FirebaseDatabase.getInstance().getReference(path);
 
 
         mInboxListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, String> chats = (Map<String, String>) dataSnapshot.getValue();
-                inboxEntries = new ArrayList<>();
-                for (String c : chats.keySet()) {
-                    inboxEntries.add(new InboxEntry(chats.get(c), c));
-                }
-                namesArrayAdapter =
-                        new ArrayAdapter<>(inboxContext,
-                                R.layout.user_list, inboxEntries);
-                inboxListView.setAdapter(namesArrayAdapter);
-
-                inboxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> a, View v, int i, long l) {
-                        Intent intent = new Intent(getActivity(), MessageActivity.class);
-                        intent.putExtra("CHAT_ID", inboxEntries.get(i).getChatId());
-                        startActivity(intent);
+                if (dataSnapshot.exists()) {
+                    Map<String, String> chats = (Map<String, String>) dataSnapshot.getValue();
+                    inboxEntries = new ArrayList<>();
+                    for (String c : chats.keySet()) {
+                        inboxEntries.add(new InboxEntry(chats.get(c), c));
                     }
-                });
+                    namesArrayAdapter =
+                            new ArrayAdapter<>(inboxContext,
+                                    R.layout.user_list, inboxEntries);
+                    inboxListView.setAdapter(namesArrayAdapter);
+
+                    inboxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> a, View v, int i, long l) {
+                            Intent intent = new Intent(getActivity(), MessageActivity.class);
+                            intent.putExtra("CHAT_ID", inboxEntries.get(i).getChatId());
+                            startActivity(intent);
+                        }
+                    });
+                }
             }
 
             @Override
