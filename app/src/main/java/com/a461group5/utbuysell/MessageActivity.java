@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.a461group5.utbuysell.adapters.MessageAdapter;
 import com.a461group5.utbuysell.models.Chat;
+import com.a461group5.utbuysell.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -67,6 +68,18 @@ public class MessageActivity extends Activity {
                 if (chatId == null) {
                     chatId = mDatabase.push().getKey(); //create a new chat in DB
                     initDatabaseRef(chatId);
+                    FirebaseDatabase.getInstance().getReference("users/" + user.getUid()).
+                            addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    User user = dataSnapshot.getValue(User.class);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                 }
                 sendMessage(messageBody);
                 messageBodyField.getText().clear();

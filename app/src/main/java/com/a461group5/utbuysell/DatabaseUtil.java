@@ -1,5 +1,7 @@
 package com.a461group5.utbuysell;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -29,10 +31,11 @@ public class DatabaseUtil {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(path);
         final TaskCompletionSource<Object> tcs = new TaskCompletionSource();
 
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 tcs.setResult(dataSnapshot.getValue(clazz));
+                Log.d("read", "hello");
             }
 
             @Override
@@ -52,6 +55,8 @@ public class DatabaseUtil {
 
         return task.getResult(); //TODO: function never hits here, not sure why
     }
+
+
 
 
 }

@@ -53,6 +53,7 @@ public class PageFragment extends Fragment {
 
     //private variables used for inbox fragment////////
     private DatabaseReference chatRef;
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     private ValueEventListener mInboxListener;
     private ArrayAdapter<InboxEntry> namesArrayAdapter;
     private ArrayList<InboxEntry> inboxEntries;
@@ -224,8 +225,6 @@ public class PageFragment extends Fragment {
                 Map<String, String> chats = (Map<String, String>) dataSnapshot.getValue();
                 inboxEntries = new ArrayList<>();
                 for (String c : chats.keySet()) {
-                    //Chat chat = (Chat) DatabaseUtil.getValue("chats/" + c, Chat.class);
-                    //String senderID = chat.getOtherUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     inboxEntries.add(new InboxEntry(chats.get(c), c));
                 }
                 namesArrayAdapter =
@@ -251,15 +250,6 @@ public class PageFragment extends Fragment {
         chatRef.addValueEventListener(mInboxListener);
 
 
-//        Button goToChat = (Button) view.findViewById(R.id.temp_goToChat);
-//        goToChat.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(), MessageActivity.class);
-//                intent.putExtra("CHAT_ID", "chatTestKey");
-//                startActivity(intent);
-//            }
-//        });
     }
 
 
