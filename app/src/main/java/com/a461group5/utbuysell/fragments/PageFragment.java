@@ -29,6 +29,7 @@ import com.a461group5.utbuysell.R;
 import com.a461group5.utbuysell.ViewPostActivity;
 import com.a461group5.utbuysell.adapters.ListingsAdapter;
 import com.a461group5.utbuysell.models.InboxEntry;
+import com.a461group5.utbuysell.models.Post;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -197,13 +198,28 @@ public class PageFragment extends Fragment {
             ListingsHeader.setText("Transactions");
         }
 
-        ArrayList<String> itemsData = new ArrayList<>();
+        ArrayList<Post> itemsData = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            itemsData.add("Fragment " + getArguments().getInt("index", -1) + " / Item " + i);
+            //itemsData.add("Fragment " + getArguments().getInt("index", -1) + " / Item " + i);
         }
+        mDatabase.child("posts").child("-KgYDJNoMJxO62pbLH8F").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Post post = dataSnapshot.getValue(Post.class);
+                        ArrayList<Post> itemsData = new ArrayList<>();
+                        itemsData.add(post);
+                        ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), new ArrayList<String>());
+                        recyclerView.setAdapter(adapter);
+                    }
 
-        ListingsAdapter adapter = new ListingsAdapter(itemsData);
-        recyclerView.setAdapter(adapter);
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+
     }
 
     /**

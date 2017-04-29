@@ -31,7 +31,7 @@
                     android:textSize="18sp" />
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/listImgPreview"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_alignParentLeft="true"
@@ -41,12 +41,13 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/listPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="300dp"
                 android:layout_marginTop="60dp"
                 android:background="@drawable/rectangle"
+                android:textColor="@android:color/black"
                 android:text="TextView" />
         </RelativeLayout>
 
