@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by irfanhasan on 3/29/17.
@@ -77,5 +76,10 @@ public class Chat {
     }
 
     @Exclude
-    public Set<String> getUsers() { return users.keySet(); }
+    public String getOtherUser(String myId) {
+        for (String user : users.keySet()) {
+            if (!myId.equals(user)) return user;
+        }
+        return null;
+    }
 }

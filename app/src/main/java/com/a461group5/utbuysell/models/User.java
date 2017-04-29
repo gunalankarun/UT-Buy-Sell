@@ -16,7 +16,7 @@ public class User {
     String token;
     Map<String, Boolean>  seller_posts;
     Map<String, Boolean> buyer_posts;
-    Map<String, Boolean> chats;
+    Map<String, String> chats;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -29,7 +29,7 @@ public class User {
         this.token = token;
         seller_posts = new HashMap<String, Boolean>();
         buyer_posts = new HashMap<String, Boolean>();
-        chats = new HashMap<String, Boolean>();
+        chats = new HashMap<String, String>();
     }
 
     @Exclude

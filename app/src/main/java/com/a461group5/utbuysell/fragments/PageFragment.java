@@ -1,5 +1,6 @@
 package com.a461group5.utbuysell.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,19 +17,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.a461group5.utbuysell.MessageActivity;
 import com.a461group5.utbuysell.R;
 import com.a461group5.utbuysell.ViewPostActivity;
 import com.a461group5.utbuysell.adapters.ListingsAdapter;
+import com.a461group5.utbuysell.models.InboxEntry;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Map;
+
+import static com.a461group5.utbuysell.R.id.usersListView;
 
 /**
  *
@@ -38,6 +50,15 @@ public class PageFragment extends Fragment {
     //private FrameLayout fragmentContainer;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
+
+    //private variables used for inbox fragment////////
+    private DatabaseReference chatRef;
+    private ValueEventListener mInboxListener;
+    private ArrayAdapter<InboxEntry> namesArrayAdapter;
+    private ArrayList<InboxEntry> inboxEntries;
+    private ListView inboxListView;
+    private Context inboxContext;
+    //////////////////////////////////////////////////
 
     private enum Type {
         LISTINGS, TRANSACTIONS, INBOX, PROFILE
@@ -190,12 +211,44 @@ public class PageFragment extends Fragment {
     private void initInbox(View view) {
         TextView inboxHeader = (TextView) view.findViewById(R.id.inbox_header);
         inboxHeader.setText("Inbox");
-        DatabaseReference mDatabase;
+        inboxListView = (ListView) view.findViewById(usersListView);
+        inboxContext = getActivity().getApplicationContext();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String path = path = "/users/" + user.getUid() + "/chats";
-        mDatabase = FirebaseDatabase.getInstance().getReference(path);
+        chatRef = FirebaseDatabase.getInstance().getReference(path);
 
 
+        mInboxListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, String> chats = (Map<String, String>) dataSnapshot.getValue();
+                inboxEntries = new ArrayList<>();
+                for (String c : chats.keySet()) {
+                    //Chat chat = (Chat) DatabaseUtil.getValue("chats/" + c, Chat.class);
+                    //String senderID = chat.getOtherUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    inboxEntries.add(new InboxEntry(chats.get(c), c));
+                }
+                namesArrayAdapter =
+                        new ArrayAdapter<>(inboxContext,
+                                R.layout.user_list, inboxEntries);
+                inboxListView.setAdapter(namesArrayAdapter);
+
+                inboxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> a, View v, int i, long l) {
+                        Intent intent = new Intent(getActivity(), MessageActivity.class);
+                        intent.putExtra("CHAT_ID", inboxEntries.get(i).getChatId());
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        chatRef.addValueEventListener(mInboxListener);
 
 
 //        Button goToChat = (Button) view.findViewById(R.id.temp_goToChat);
