@@ -6,8 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.*;
 
+import com.a461group5.utbuysell.models.Post;
+import com.a461group5.utbuysell.models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -24,6 +31,8 @@ public class ViewPostActivity extends AppCompatActivity {
     private Button mMessageButton;
     private Button mFavoriteButton;
 
+    String postId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +44,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         String messageId = bundle.getString("messageId");
+        postId = bundle.getString("postId");
 
         initUI();
     }
@@ -69,6 +79,14 @@ public class ViewPostActivity extends AppCompatActivity {
         description = (TextView) findViewById(R.id.view_post_meeting_time);
         description.setText("Meeting Time");
 
+        mFavoriteButton = (Button) findViewById(R.id.view_post_favorite);
+        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                favoritePost();
+            }
+        });
+
         mMessageButton = (Button) findViewById(R.id.view_post_message);
         mMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,16 +94,38 @@ public class ViewPostActivity extends AppCompatActivity {
                 // Code here
             }
         });
+    }
 
-        mFavoriteButton = (Button) findViewById(R.id.view_post_favorite);
-        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Code here
-            }
-        });
+    private void favoritePost() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        // Add favoritePost reference to User
+        mDatabase.child("users").child(user.getUid()).child("favoritePosts").child(postId).setValue(true);
 
+        //Add user to Post's favorite Map
+        mDatabase.child("posts").child(postId).child("favoritedUsers").child(user.getUid()).setValue(true);
+
+        Toast.makeText(ViewPostActivity.this, "Favorited Post!",
+                Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void messageSeller() {
+        FirebaseDatabase.getInstance().getReference("posts/" + postId).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Post currentPost = dataSnapshot.getValue(Post.class);
+                        Intent i = new Intent(ViewPostActivity.this, MessageActivity.class);
+                        i.putExtra("sellerId", currentPost.seller);
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
     }
 }
