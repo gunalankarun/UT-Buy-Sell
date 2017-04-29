@@ -15,7 +15,7 @@ public class Post {
     public String status;
     public String seller;
     public String buyer;
-    public int price;
+    public float price;
     public Map<String, Boolean> categories;
     public Map<String, Boolean> imagePaths;
 
@@ -23,7 +23,7 @@ public class Post {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Post(String title, String description, String seller, int price, String[] categories) {
+    public Post(String title, String description, String seller, float price, String[] categories) {
         this.title = title;
         this.description = description;
         this.status = "Posted";

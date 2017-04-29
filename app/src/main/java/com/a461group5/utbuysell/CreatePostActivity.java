@@ -172,15 +172,15 @@ public class CreatePostActivity extends AppCompatActivity {
             return;
         }
 
-//        // Image detection
-        if (mOutputFileUri == null) {
-            Toast.makeText(CreatePostActivity.this, "Please select an Image",
-                    Toast.LENGTH_SHORT).show();
-            mSubmitButton.setEnabled(true);
-            return;
-        }
+         // Image Required
+//        if (mOutputFileUri == null) {
+//            Toast.makeText(CreatePostActivity.this, "Please select an Image",
+//                    Toast.LENGTH_SHORT).show();
+//            mSubmitButton.setEnabled(true);
+//            return;
+//        }
 
-        int price = Integer.parseInt(priceText);
+        float price = Float.parseFloat(priceText);
         String[] categories = categoriesText.split(",");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -207,26 +207,29 @@ public class CreatePostActivity extends AppCompatActivity {
             mDatabase.child("categories").child(category).child(key).setValue(true);
         }
 
-        // Saves Picture into storage
-        String uniqueName = getUniqueName();
-        StorageReference photoRef = mStorageRef.child("postImages").child(key).child(uniqueName);
-        photoRef.putFile(mOutputFileUri)
-                .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(CreatePostActivity.this, "Image Upload Success",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(CreatePostActivity.this, "Image Upload ERROR",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-        uniqueName = uniqueName.substring(0,uniqueName.indexOf("."));
-        mDatabase.child("posts").child(key).child("imagePaths").child(uniqueName).setValue(true);
+        if (mOutputFileUri != null) {
+            // Saves Picture into storage
+            String uniqueName = getUniqueName();
+            StorageReference photoRef = mStorageRef.child("postImages").child(key).child(uniqueName);
+            photoRef.putFile(mOutputFileUri)
+                    .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(CreatePostActivity.this, "Image Upload Success",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Toast.makeText(CreatePostActivity.this, "Image Upload ERROR",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            uniqueName = uniqueName.substring(0,uniqueName.indexOf("."));
+            mDatabase.child("posts").child(key).child("imagePaths").child(uniqueName).setValue(true);
+        }
 
         // Reenable Button
         mSubmitButton.setEnabled(true);
