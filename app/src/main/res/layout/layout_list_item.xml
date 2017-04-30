@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_marginLeft="275dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="50dp"
                 android:background="@drawable/rectangle"
                 android:text="TextView"
                 android:textColor="@android:color/black" />
