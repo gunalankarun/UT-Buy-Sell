@@ -45,7 +45,6 @@ public class ViewPostActivity extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         Bundle bundle = getIntent().getExtras();
-        String messageId = bundle.getString("messageId");
         postId = bundle.getString("postId");
 
         initUI();
@@ -113,6 +112,7 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     private void messageSeller() {
+        // Also Favorite the Post
         FirebaseDatabase.getInstance().getReference("posts/" + postId).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
