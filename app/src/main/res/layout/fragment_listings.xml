@@ -14,39 +14,43 @@
         android:textSize="24sp"
         android:textColor="@color/colorAccent" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
-
-    <RelativeLayout
-        android:id="@+id/relSendMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
-        android:paddingLeft="10dp">
-
-
-        <EditText
-            android:id="@+id/searchField"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/sendButton"
-            android:layout_alignTop="@+id/sendButton"
-            android:layout_marginBottom="-4dp"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/sendButton"
+        <RelativeLayout
+            android:id="@+id/relSendMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
             android:background="@android:color/white"
-            android:textColor="@android:color/black"
-            android:maxLines="1"
-            android:textSize="14sp" />
+            android:paddingLeft="10dp">
 
-        <Button
-            android:id="@+id/submitSearch"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentRight="true"
-            android:layout_margin="4dp"
-            android:background="@drawable/places_ic_search" />
-    </RelativeLayout>
+
+            <EditText
+                android:id="@+id/searchField"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/sendButton"
+                android:layout_alignTop="@+id/sendButton"
+                android:layout_marginBottom="-4dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/sendButton"
+                android:background="@android:color/white"
+                android:textColor="@android:color/black"
+                android:maxLines="1"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/submitSearch"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="4dp"
+                android:background="@drawable/places_ic_search" />
+        </RelativeLayout>
+    </LinearLayout>
 
 
     <FrameLayout

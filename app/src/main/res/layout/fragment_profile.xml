@@ -46,21 +46,22 @@
         android:text="TextView"
         android:textAlignment="center" />
 
-    <Button
-        android:id="@+id/upload_pic_button"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Upload Profile Picture" />
+        android:orientation="vertical"
+        android:padding="10dp">
 
-    <Button
-        android:id="@+id/log_out_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Log out" />
-    <Button
-        android:id="@+id/delete_account_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete Account" />
+        <Button
+            android:id="@+id/log_out_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log out" />
+        <Button
+            android:id="@+id/delete_account_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Account" />
+    </LinearLayout>
 
 </LinearLayout>
