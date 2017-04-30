@@ -133,6 +133,13 @@ public class PageFragment extends Fragment {
         final Drawable mDefaultProPic = view.getContext().getDrawable(R.drawable.default_profile_photo);
         final Context curContext = view.getContext();
 
+        mCircleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openImageIntent();
+            }
+        });
+
         FirebaseDatabase.getInstance().getReference("users/" + user.getUid()).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -168,15 +175,6 @@ public class PageFragment extends Fragment {
 
                     }
                 });
-
-
-        Button uploadPicButton = (Button) view.findViewById(R.id.upload_pic_button);
-        uploadPicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openImageIntent();
-            }
-        });
 
 
         Button logOutButton = (Button) view.findViewById(R.id.log_out_button);
@@ -364,7 +362,7 @@ public class PageFragment extends Fragment {
             case LISTINGS:
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
 
-                getRecentPosts();
+                //getRecentPosts();
 
                 break;
             case TRANSACTIONS:
@@ -431,29 +429,31 @@ public class PageFragment extends Fragment {
         layoutContainer.startAnimation(fadeOut);
     }
 
-    private void getRecentPosts() {
-        Query postsQuery = mDatabase.child("posts").orderByKey();
+    public void getRecentPosts() {
+        if (myType == Type.LISTINGS || myType == Type.TRANSACTIONS) {
 
+            Query postsQuery = mDatabase.child("posts").orderByKey();
 
-        postsQuery.limitToFirst(50).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                keyData.clear();
-                itemsData.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String key = snapshot.getKey();
-                    keyData.add(0, key);
-                    Post post = snapshot.getValue(Post.class);
-                    itemsData.add(0,post);
+            postsQuery.limitToFirst(50).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    keyData.clear();
+                    itemsData.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String key = snapshot.getKey();
+                        keyData.add(0, key);
+                        Post post = snapshot.getValue(Post.class);
+                        itemsData.add(0,post);
+                    }
+                    ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
+                    recyclerView.setAdapter(adapter);
+
                 }
-                ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
-                recyclerView.setAdapter(adapter);
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
     }
 
     private void getPostsByQuery(String queryWord) {
