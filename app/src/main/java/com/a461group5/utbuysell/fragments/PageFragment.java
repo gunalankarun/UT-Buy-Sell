@@ -186,21 +186,9 @@ public class PageFragment extends Fragment {
         TextView ListingsHeader = (TextView) view.findViewById(R.id.listings_header);
         ListingsHeader.setText("All Listings");
 
-        Button viewPost = (Button) view.findViewById(R.id.temp_view_post);
-        viewPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String messageId = "-KgSb_iZ4JOSNTm7kmhe";
-                Intent intent = new Intent(getActivity(), ViewPostActivity.class);
-                intent.putExtra("messageId", messageId);
-                startActivity(intent);
-            }
-        });
-
         if (myType == Type.TRANSACTIONS) {
             ListingsHeader.setText("Transactions");
         }
-
 
         Query postsQuery = mDatabase.child("posts").orderByKey();
 
@@ -222,7 +210,6 @@ public class PageFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
 
 
     }

@@ -14,13 +14,6 @@
         android:textSize="24sp"
         android:textColor="@color/colorAccent" />
 
-    <Button
-        android:id="@+id/temp_view_post"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="View Post" />
-
     <FrameLayout
         android:id="@+id/fragment_listings_frameLayout"
         xmlns:android="http://schemas.android.com/apk/res/android"

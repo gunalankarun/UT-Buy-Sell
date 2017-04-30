@@ -1,9 +1,13 @@
 package com.a461group5.utbuysell;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +36,7 @@ public class ViewPostActivity extends AppCompatActivity {
     private TextView meeting_time;
     private Button mMessageButton;
     private Button mFavoriteButton;
+    private FloatingActionButton floatingActionButton;
 
     String postId;
 
@@ -74,11 +79,11 @@ public class ViewPostActivity extends AppCompatActivity {
         TextView item_tags = (TextView) findViewById(R.id.view_post_tags);
         item_tags.setText("Comma Seperated Item Tags");
 
-        description = (TextView) findViewById(R.id.view_post_meeting_location);
-        description.setText("Meeting Location");
+        meeting_location = (TextView) findViewById(R.id.view_post_meeting_location);
+        meeting_location.setText("Meeting Location");
 
-        description = (TextView) findViewById(R.id.view_post_meeting_time);
-        description.setText("Meeting Time");
+        meeting_time = (TextView) findViewById(R.id.view_post_meeting_time);
+        meeting_time.setText("Meeting Time");
 
         mFavoriteButton = (Button) findViewById(R.id.view_post_favorite);
         mFavoriteButton.setOnClickListener(new View.OnClickListener() {
@@ -88,16 +93,19 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         });
 
-        mMessageButton = (Button) findViewById(R.id.view_post_message);
-        mMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_message_button);
+        //floatingButtonAnimateIn();
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 messageSeller();
             }
         });
+
     }
 
     private void favoritePost() {
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         // Add favoritePost reference to User
@@ -106,13 +114,10 @@ public class ViewPostActivity extends AppCompatActivity {
         //Add user to Post's favorite Map
         mDatabase.child("posts").child(postId).child("favoritedUsers").child(user.getUid()).setValue(true);
 
-        Toast.makeText(ViewPostActivity.this, "Favorited Post!",
-                Toast.LENGTH_SHORT).show();
-
     }
 
     private void messageSeller() {
-        // Also Favorite the Post
+        favoritePost();
         FirebaseDatabase.getInstance().getReference("posts/" + postId).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -129,5 +134,42 @@ public class ViewPostActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void floatingButtonAnimateIn() {
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.setAlpha(0f);
+        floatingActionButton.setScaleX(0f);
+        floatingActionButton.setScaleY(0f);
+        floatingActionButton.animate()
+                .alpha(1)
+                .scaleX(1)
+                .scaleY(1)
+                .setDuration(300)
+                .setInterpolator(new OvershootInterpolator())
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        floatingActionButton.animate()
+                                .setInterpolator(new LinearOutSlowInInterpolator())
+                                .start();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                })
+                .start();
     }
 }
