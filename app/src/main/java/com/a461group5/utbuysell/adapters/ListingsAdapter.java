@@ -100,7 +100,7 @@ public class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ViewHo
             }
         } else {
             //put default picture here
-            holder.mImageView.setImageDrawable(context.getDrawable(R.drawable.shopping_cart));
+            holder.mImageView.setImageDrawable(context.getDrawable(R.drawable.shopping));
         }
         //holder.mImageView.setImageURI(new URI("test"));
     }
