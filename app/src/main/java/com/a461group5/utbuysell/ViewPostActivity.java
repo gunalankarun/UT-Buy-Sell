@@ -12,9 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.a461group5.utbuysell.models.Post;
 import com.a461group5.utbuysell.models.User;
@@ -27,6 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.Map;
 
 public class ViewPostActivity extends AppCompatActivity {
 
@@ -142,14 +142,18 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private void messageSeller() {
         favoritePost();
+
+
+
         FirebaseDatabase.getInstance().getReference("posts/" + postId).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Post currentPost = dataSnapshot.getValue(Post.class);
-                        Intent i = new Intent(ViewPostActivity.this, MessageActivity.class);
-                        i.putExtra("sellerId", currentPost.seller);
-                        startActivity(i);
+                        checkAndSwitchToChat(currentPost.seller);
+                        //Intent i = new Intent(ViewPostActivity.this, MessageActivity.class);
+                        //i.putExtra("sellerId", currentPost.seller);
+                        //startActivity(i);
                     }
 
                     @Override
@@ -158,6 +162,38 @@ public class ViewPostActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void checkAndSwitchToChat(final String sellerId) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        FirebaseDatabase.getInstance().getReference("users/" + user.getUid() + "/convos").
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            Map<String, String> convos = (Map<String, String>) dataSnapshot.getValue();
+                            if (convos.containsKey(sellerId)) {
+                                Intent i = new Intent(ViewPostActivity.this, MessageActivity.class);
+                                i.putExtra("CHAT_ID", convos.get(sellerId));
+                                startActivity(i);
+                            } else {
+                                Intent i = new Intent(ViewPostActivity.this, MessageActivity.class);
+                                i.putExtra("sellerId", sellerId);
+                                startActivity(i);
+                            }
+                        } else {
+                            Intent i = new Intent(ViewPostActivity.this, MessageActivity.class);
+                            i.putExtra("sellerId", sellerId);
+                            startActivity(i);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     private void floatingButtonAnimateIn() {

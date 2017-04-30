@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a461group5.utbuysell.adapters.MessageAdapter;
@@ -47,12 +48,18 @@ public class MessageActivity extends Activity {
         Intent intent = getIntent();
         chatId = intent.getStringExtra("CHAT_ID");
         receiverId = intent.getStringExtra("sellerId");
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
         //Need to distinguish if this is the first time starting this chat
         if (chatId != null) {
             initDatabaseRef(chatId);
+            getName();
         } else {
             mDatabase = FirebaseDatabase.getInstance().getReference("chats");
         }
+
+
 
         messageBodyField = (EditText) findViewById(R.id.messageBodyField);
 
@@ -72,6 +79,16 @@ public class MessageActivity extends Activity {
                     mDatabase.child(chatId).setValue(chat);
                     initDatabaseRef(chatId);
 
+
+
+
+                    //add this chat to both people's inboxes
+                    FirebaseDatabase.getInstance().getReference("users").child(receiverId)
+                            .child("convos").child(user.getUid()).setValue(chatId); //adding to other person's convo list
+                    FirebaseDatabase.getInstance().getReference("users").child(user.getUid())
+                            .child("convos").child(receiverId).setValue(chatId); //adding to this user's convo list
+
+
                     //add this chat to both people's inboxes
                     FirebaseDatabase.getInstance().getReference("users").child(receiverId)
                             .child("chats").child(chatId).setValue(user.getDisplayName()); //adding to other person's inbox
@@ -83,6 +100,8 @@ public class MessageActivity extends Activity {
                                     FirebaseDatabase.getInstance().getReference("users").
                                             child(user.getUid()).child("chats").child(chatId).
                                             setValue(u.getName());
+                                    TextView view = (TextView) findViewById(R.id.nameBar);
+                                    view.setText(u.getName());
                                 }
 
                                 @Override
@@ -96,7 +115,7 @@ public class MessageActivity extends Activity {
 
             }
         });
-        user = FirebaseAuth.getInstance().getCurrentUser();
+
     }
 
     void sendMessage(String msg) {
@@ -164,5 +183,22 @@ public class MessageActivity extends Activity {
             }
         };
         mDatabase.addValueEventListener(chatListener);
+    }
+
+    void getName() {
+        FirebaseDatabase.getInstance().getReference("users/" + user.getUid() + "/chats/" + chatId).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String name = (String) dataSnapshot.getValue();
+                        TextView view = (TextView) findViewById(R.id.nameBar);
+                        view.setText(name);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 }
