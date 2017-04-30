@@ -121,7 +121,7 @@ public class CreatePostActivity extends AppCompatActivity {
         final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Source");
 
         // Add the camera options.
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+        //chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
 
         startActivityForResult(chooserIntent, 42);
     }
@@ -170,14 +170,6 @@ public class CreatePostActivity extends AppCompatActivity {
             mSubmitButton.setEnabled(true);
             return;
         }
-
-//        //Image Required
-//        if (mOutputFileUri == null) {
-//            Toast.makeText(CreatePostActivity.this, "Please select an Image",
-//                    Toast.LENGTH_SHORT).show();
-//            mSubmitButton.setEnabled(true);
-//            return;
-//        }
 
         float price = Float.parseFloat(priceText);
         String[] categories = categoriesText.split(",");
