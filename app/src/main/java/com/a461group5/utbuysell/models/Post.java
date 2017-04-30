@@ -11,6 +11,7 @@ import java.util.Map;
 public class Post {
 
     public String title;
+    public String queryTitle;
     public String description;
     public String status;
     public String seller;
@@ -36,6 +37,7 @@ public class Post {
             this.categories.put(category, true);
         }
         this.imagePaths = new HashMap<>();
+        this.queryTitle = title.toLowerCase().trim().replaceAll("\\s","");
     }
 
     // [START post_to_map]
@@ -43,13 +45,14 @@ public class Post {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("title", title);
+        result.put("queryTitle", queryTitle);
         result.put("description", description);
         result.put("status", status);
         result.put("seller", seller);
         result.put("buyer", buyer);
         result.put("price", price);
         result.put("categories", categories);
-        result.put("categories", categories);
+        result.put("imagePaths", imagePaths);
 
         return result;
     }

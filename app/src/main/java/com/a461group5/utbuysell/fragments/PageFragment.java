@@ -190,6 +190,7 @@ public class PageFragment extends Fragment {
         searchQuery = (EditText) view.findViewById(R.id.searchField);
         ListingsHeader.setText("All Listings");
 
+
         Button submitPost = (Button) view.findViewById(R.id.submitSearch);
         submitPost.setOnClickListener(new View.OnClickListener() {
             boolean searchSubmitted = false;
@@ -216,6 +217,8 @@ public class PageFragment extends Fragment {
             ListingsHeader.setText("Transactions");
         }
        getRecentPosts();
+
+
     }
 
     /**
