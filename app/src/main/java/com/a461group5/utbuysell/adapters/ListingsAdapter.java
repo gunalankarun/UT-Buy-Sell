@@ -1,6 +1,7 @@
 package com.a461group5.utbuysell.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.a461group5.utbuysell.R;
+import com.a461group5.utbuysell.ViewPostActivity;
 import com.a461group5.utbuysell.models.Post;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,12 +34,26 @@ public class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ViewHo
         public TextView mTitleTextView;
         public TextView mPriceTextView;
         public ImageView mImageView;
+        public View view;
+        public Post currentPost;
+        public String currentId;
+
         public ViewHolder(View v) {
             super(v);
+            view = v;
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(view.getContext(), ViewPostActivity.class);
+                    intent.putExtra("postId", currentId);
+                    view.getContext().startActivity(intent);
+                }
+            });
             mTitleTextView = (TextView) v.findViewById(R.id.layout_list_item_title);
             mPriceTextView = (TextView) v.findViewById(R.id.listPrice);
             mImageView = (ImageView) v.findViewById(R.id.listImgPreview);
         }
+
     }
 
     public ListingsAdapter(ArrayList<Post> dataset, Context context, ArrayList<String> postId) {
@@ -57,6 +73,8 @@ public class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        holder.currentPost = mDataset.get(position);
+        holder.currentId = postIds.get(position);
         holder.mTitleTextView.setText(mDataset.get(position).description);
         holder.mPriceTextView.setText("$" + String.format("%.2f", mDataset.get(position).price));
         holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

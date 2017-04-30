@@ -46,7 +46,7 @@ public class MessageActivity extends Activity {
         //get chatId from the intent
         Intent intent = getIntent();
         chatId = intent.getStringExtra("CHAT_ID");
-        receiverId = intent.getStringExtra("REC_ID");
+        receiverId = intent.getStringExtra("sellerId");
         //Need to distinguish if this is the first time starting this chat
         if (chatId != null) {
             initDatabaseRef(chatId);
