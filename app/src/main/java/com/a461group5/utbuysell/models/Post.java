@@ -37,7 +37,7 @@ public class Post {
             this.categories.put(category, true);
         }
         this.imagePaths = new HashMap<>();
-        this.queryTitle = title.toLowerCase().trim().replaceAll("\\s","");
+        this.queryTitle = title.toLowerCase();
     }
 
     // [START post_to_map]

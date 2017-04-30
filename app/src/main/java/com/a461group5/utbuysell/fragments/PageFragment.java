@@ -407,7 +407,7 @@ public class PageFragment extends Fragment {
     }
 
     private void getPostsByQuery(String queryWord) {
-        String search = queryWord.replaceAll("\\s+","");
+        String search = queryWord.toLowerCase();
         Query postsQuery = mDatabase.child("posts").orderByChild("queryTitle")
                 .startAt(search).endAt(search + "\uf8ff");
 
