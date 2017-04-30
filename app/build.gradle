@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.a461group5.utbuysell"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 4
         versionName "0.5.0"
