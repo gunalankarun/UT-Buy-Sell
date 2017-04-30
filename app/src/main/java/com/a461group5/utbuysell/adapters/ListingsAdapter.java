@@ -75,7 +75,7 @@ public class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.currentPost = mDataset.get(position);
         holder.currentId = postIds.get(position);
-        holder.mTitleTextView.setText(mDataset.get(position).description);
+        holder.mTitleTextView.setText(mDataset.get(position).title);
         holder.mPriceTextView.setText("$" + String.format("%.2f", mDataset.get(position).price));
         holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Post post = mDataset.get(position);
