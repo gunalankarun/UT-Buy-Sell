@@ -61,23 +61,27 @@ public class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ViewHo
         holder.mPriceTextView.setText("$" + String.format("%.2f", mDataset.get(position).price));
         holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Post post = mDataset.get(position);
-        for (String imgPath : post.imagePaths.keySet()) {
-            Task<Uri> uri = FirebaseStorage.getInstance().getReference().child("postImages/").
-                    child(postIds.get(position)).child(imgPath).getDownloadUrl();
+        if(post.imagePaths != null) {
+            for (String imgPath : post.imagePaths.keySet()) {
+                Task<Uri> uri = FirebaseStorage.getInstance().getReference().child("postImages/").
+                        child(postIds.get(position)).child(imgPath).getDownloadUrl();
 
-            uri.addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    //holder.mImageView.setImageBitmap(getImageBitmap(task.getResult().toString()));
-                    Uri uri = task.getResult();
-                    Glide
-                            .with(context)
-                            .load(uri) // the uri you got from Firebase
-                            .centerCrop()
-                            .into(holder.mImageView); //Your imageView variable
-                }
-            });
+                uri.addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        //holder.mImageView.setImageBitmap(getImageBitmap(task.getResult().toString()));
+                        Uri uri = task.getResult();
+                        Glide
+                                .with(context)
+                                .load(uri) // the uri you got from Firebase
+                                .centerCrop()
+                                .into(holder.mImageView); //Your imageView variable
+                    }
+                });
 
+            }
+        } else {
+            //put default picture here
         }
         //holder.mImageView.setImageURI(new URI("test"));
     }
