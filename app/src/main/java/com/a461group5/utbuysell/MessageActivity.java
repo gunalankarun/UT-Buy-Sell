@@ -68,8 +68,14 @@ public class MessageActivity extends Activity {
                 }
                 if (chatId == null) {
                     chatId = mDatabase.push().getKey(); //create a new chat in DB
+                    chat = new Chat(receiverId, user.getUid());
+                    mDatabase.child(chatId).setValue(chat);
                     initDatabaseRef(chatId);
-                    FirebaseDatabase.getInstance().getReference("users/" + receiverId).
+
+                    //add this chat to both people's inboxes
+                    FirebaseDatabase.getInstance().getReference("users").child(receiverId)
+                            .child("chats").child(chatId).setValue(user.getDisplayName()); //adding to other person's inbox
+                    FirebaseDatabase.getInstance().getReference("users/" + receiverId). //adding to this user's inbox
                             addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -121,13 +127,11 @@ public class MessageActivity extends Activity {
 
     /**
      * Sets FirebaseDB reference to correct path (ie make it point to where current chat messages are stored)
-     * @param chatId the id that points to the chat thatthe  current instance of this activity represents
+     * @param chatId the id that points to the chat that the  current instance of this activity represents
      */
     private void initDatabaseRef(@NonNull String chatId) {
         path = "chats/" + chatId;
         mDatabase = FirebaseDatabase.getInstance().getReference(path);
-        chat = new Chat(receiverId, user.getUid());
-        mDatabase.setValue(chat);
         ValueEventListener chatListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

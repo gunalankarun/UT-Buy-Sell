@@ -177,7 +177,6 @@ public class MessagingService extends FirebaseMessagingService {
          * notification: {
              title: `{senderName} sent you a message.`,
             chatId: `{chatKey}`,
-            senderId: `{senderId}`,
             body: `{messageBody}`
          }
          */
