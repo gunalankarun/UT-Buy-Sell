@@ -3,10 +3,13 @@ package com.a461group5.utbuysell;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -82,6 +85,9 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         });
 
+        Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        CoordinatorLayout layoutContainer = (CoordinatorLayout) findViewById(R.id.view_post_container);
+        layoutContainer.startAnimation(fadeIn);
 
         FirebaseDatabase.getInstance().getReference("posts/" + postId).
                 addListenerForSingleValueEvent(new ValueEventListener() {
@@ -90,8 +96,6 @@ public class ViewPostActivity extends AppCompatActivity {
                         Post currentPost = dataSnapshot.getValue(Post.class);
 
                         item_name.setText(currentPost.title);
-
-                        seller_name.setText(currentPost.seller);
                         item_price.setText("Price: $" + String.format("%.2f", currentPost.price));
                         description.setText("Description: " + currentPost.description);
                         String cats = "";
