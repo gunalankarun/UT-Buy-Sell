@@ -3,7 +3,10 @@ package com.a461group5.utbuysell.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,11 +29,16 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.a461group5.utbuysell.MainActivity;
 import com.a461group5.utbuysell.MessageActivity;
 import com.a461group5.utbuysell.R;
 import com.a461group5.utbuysell.adapters.ListingsAdapter;
 import com.a461group5.utbuysell.models.InboxEntry;
 import com.a461group5.utbuysell.models.Post;
+import com.a461group5.utbuysell.models.User;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,9 +47,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.a461group5.utbuysell.R.id.usersListView;
 
@@ -117,6 +128,47 @@ public class PageFragment extends Fragment {
      * TODO: profile tab does not refresh (does not update user info such as not-verified/verified)
      */
     private void initProfile(View view) {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final CircleImageView mCircleImageView = (CircleImageView) view.findViewById(R.id.profile_image);
+        final Drawable mDefaultProPic = view.getContext().getDrawable(R.drawable.default_profile_photo);
+        final Context curContext = view.getContext();
+
+        FirebaseDatabase.getInstance().getReference("users/" + user.getUid()).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User currentUser = dataSnapshot.getValue(User.class);
+
+                        if (currentUser.profilePicturePath == null || currentUser.profilePicturePath.trim().equals("")) {
+                            mCircleImageView.setImageDrawable(mDefaultProPic);
+                        } else {
+                            Task<Uri> uri = FirebaseStorage.getInstance().getReference().child("profilePictures/").
+                                    child(user.getUid()).child(currentUser.profilePicturePath).getDownloadUrl();
+
+                            uri.addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+
+                                    Uri uri = task.getResult();
+                                    Glide
+                                            .with(curContext)
+                                            .load(uri) // the uri you got from Firebase
+                                            .centerCrop()
+                                            .into(mCircleImageView); //Your imageView variable
+                                }
+                            });
+                        }
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
 
         Button uploadPicButton = (Button) view.findViewById(R.id.upload_pic_button);
         uploadPicButton.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +183,6 @@ public class PageFragment extends Fragment {
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null) {
                     // User is signed in
                     FirebaseAuth.getInstance().signOut();
@@ -145,7 +196,6 @@ public class PageFragment extends Fragment {
         deleteAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                 user.delete();
 
@@ -155,7 +205,7 @@ public class PageFragment extends Fragment {
         TextView ProfileHeader = (TextView) view.findViewById(R.id.profile_header);
         ProfileHeader.setText("Profile");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         TextView displayName = (TextView) view.findViewById(R.id.show_name);
         displayName.setText(user.getDisplayName());
 

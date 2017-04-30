@@ -14,6 +14,7 @@ public class User {
     String first_name;
     String last_name;
     String token;
+    public String profilePicturePath;
     Map<String, Boolean>  seller_posts;
     Map<String, Boolean> buyer_posts;
     Map<String, String> chats;
@@ -30,6 +31,7 @@ public class User {
         seller_posts = new HashMap<String, Boolean>();
         buyer_posts = new HashMap<String, Boolean>();
         chats = new HashMap<String, String>();
+        this.profilePicturePath = "";
     }
 
     @Exclude

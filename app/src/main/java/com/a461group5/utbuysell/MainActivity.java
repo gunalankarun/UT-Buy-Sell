@@ -17,24 +17,33 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
+import com.a461group5.utbuysell.models.User;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.a461group5.utbuysell.fragments.PageFragment;
 import com.a461group5.utbuysell.adapters.ViewPagerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private StorageReference mStorageRef;
     private DatabaseReference mDatabase;
+
+    private CircleImageView mCircleImageView;
 
 
     @Override
@@ -103,13 +114,50 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             } else {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                StorageReference photoRef = mStorageRef.child("profilePictures").child(user.getUid()).child("profilePicture.jpg");
+                StorageReference photoRef = mStorageRef.child("profilePictures").child(user.getUid()).child("profilePicture");
                 photoRef.putFile(mOutputFileUri)
                         .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(MainActivity.this, "Image Upload Success",
+                                Toast.makeText(MainActivity.this, "Uploaded Profile Picture",
                                         Toast.LENGTH_SHORT).show();
+                                // Use glide here
+                                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                mCircleImageView = (CircleImageView) findViewById(R.id.profile_image);
+
+                                FirebaseDatabase.getInstance().getReference("users/" + user.getUid()).
+                                        addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                User currentUser = dataSnapshot.getValue(User.class);
+
+                                                Task<Uri> uri = FirebaseStorage.getInstance().getReference().child("profilePictures/").
+                                                        child(user.getUid()).child(currentUser.profilePicturePath).getDownloadUrl();
+
+                                                uri.addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Uri> task) {
+
+                                                        Uri uri = task.getResult();
+                                                        Glide
+                                                                .with(MainActivity.this)
+                                                                .load(uri) // the uri you got from Firebase
+                                                                .centerCrop()
+                                                                .into(mCircleImageView); //Your imageView variable
+                                                    }
+                                                });
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
+
+
                             }
                         })
                         .addOnFailureListener(this, new OnFailureListener() {
@@ -119,10 +167,9 @@ public class MainActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
-                mDatabase.child("users").child(user.getUid()).child("profilePicturePath").setValue("/profilePictures/"+user.getUid()+"/profilePicture");
+                mDatabase.child("users").child(user.getUid()).child("profilePicturePath").setValue("profilePicture");
 
-                Toast.makeText(MainActivity.this, "Uploaded Profile Picture",
-                        Toast.LENGTH_SHORT).show();
+
             }
         }
     }

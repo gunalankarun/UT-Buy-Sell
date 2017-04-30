@@ -16,9 +16,20 @@
         android:padding="16dp"
         android:textSize="24sp"
         android:textColor="@color/colorAccent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_gravity="center_horizontal"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"/>
+
     <Space
         android:layout_width="1dp"
-        android:layout_height="20dp"/>
+        android:layout_height="30dp"/>
+
     <TextView
         android:id="@+id/show_name"
         android:layout_width="match_parent"
