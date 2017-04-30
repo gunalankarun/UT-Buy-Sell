@@ -210,12 +210,19 @@ public class CreatePostActivity extends AppCompatActivity {
             // Saves Picture into storage
             String uniqueName = getUniqueName();
             StorageReference photoRef = mStorageRef.child("postImages").child(key).child(uniqueName);
+            mDatabase.child("posts").child(key).child("imagePaths").child(uniqueName).setValue(true);
             photoRef.putFile(mOutputFileUri)
                     .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(CreatePostActivity.this, "Image Upload Success",
+                            Toast.makeText(CreatePostActivity.this, "Created Post!",
                                     Toast.LENGTH_SHORT).show();
+
+
+                            mSubmitButton.setEnabled(true);
+
+                            Intent myIntent = new Intent(CreatePostActivity.this, MainActivity.class);
+                            CreatePostActivity.this.startActivity(myIntent);
                         }
                     })
                     .addOnFailureListener(this, new OnFailureListener() {
@@ -225,18 +232,14 @@ public class CreatePostActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
-
-            //uniqueName = uniqueName.substring(0,uniqueName.indexOf("."));
-            mDatabase.child("posts").child(key).child("imagePaths").child(uniqueName).setValue(true);
+        } else {
+            Toast.makeText(CreatePostActivity.this, "Created Post!",
+                    Toast.LENGTH_SHORT).show();
+            
+            mSubmitButton.setEnabled(true);
+            Intent myIntent = new Intent(CreatePostActivity.this, MainActivity.class);
+            CreatePostActivity.this.startActivity(myIntent);
         }
-
-        // Reenable Button
-        mSubmitButton.setEnabled(true);
-
-        Toast.makeText(CreatePostActivity.this, "Created Post!",
-                Toast.LENGTH_SHORT).show();
-        Intent myIntent = new Intent(CreatePostActivity.this, MainActivity.class);
-        CreatePostActivity.this.startActivity(myIntent);
 
     }
 
