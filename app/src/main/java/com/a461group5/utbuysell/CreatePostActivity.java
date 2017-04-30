@@ -174,6 +174,13 @@ public class CreatePostActivity extends AppCompatActivity {
         float price = Float.parseFloat(priceText);
         String[] categories = categoriesText.split(",");
 
+        if (price > 9999.99) {
+            Toast.makeText(CreatePostActivity.this, "Maximum price allowed is $9999.99 :(",
+                    Toast.LENGTH_SHORT).show();
+            mSubmitButton.setEnabled(true);
+            return;
+        }
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         // Check if User is verified
