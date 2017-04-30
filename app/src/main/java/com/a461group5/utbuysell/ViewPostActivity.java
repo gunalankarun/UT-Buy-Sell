@@ -96,9 +96,9 @@ public class ViewPostActivity extends AppCompatActivity {
                         description.setText("Description: " + currentPost.description);
                         String cats = "";
                         for (String c : currentPost.categories.keySet()) {
-                            cats = c + ",";
+                            cats += c + ", ";
                         }
-                        categories.setText("Categories: " + cats.substring(0,cats.length()-1));
+                        categories.setText("Categories: " + cats.substring(0,cats.length()-2));
 
                         FirebaseDatabase.getInstance().getReference("users/" + currentPost.seller).
                                 addListenerForSingleValueEvent(new ValueEventListener() {

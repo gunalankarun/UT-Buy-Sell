@@ -26,18 +26,21 @@ public class Post {
 
     public Post(String title, String description, String seller, float price, String[] categories) {
         this.title = title;
+        this.queryTitle = title.toLowerCase();
         this.description = description;
         this.status = "Posted";
         this.seller = seller;
         this.buyer = "";
         this.price = price;
+
         this.categories = new HashMap<>();
         for (String c : categories) {
             String category = c.trim().toLowerCase();
             this.categories.put(category, true);
+            this.queryTitle = this.queryTitle + " " + category;
         }
         this.imagePaths = new HashMap<>();
-        this.queryTitle = title.toLowerCase();
+
     }
 
     // [START post_to_map]
