@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -20,13 +21,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.a461group5.utbuysell.MessageActivity;
 import com.a461group5.utbuysell.R;
-import com.a461group5.utbuysell.ViewPostActivity;
 import com.a461group5.utbuysell.adapters.ListingsAdapter;
 import com.a461group5.utbuysell.models.InboxEntry;
 import com.a461group5.utbuysell.models.Post;
@@ -64,6 +65,8 @@ public class PageFragment extends Fragment {
     ArrayList<Post> itemsData = new ArrayList<Post>();
     ArrayList<String> keyData = new ArrayList<String>();
     //////////////////////////////////////////////////
+    EditText searchQuery;
+    TextView ListingsHeader;
 
     private enum Type {
         LISTINGS, TRANSACTIONS, INBOX, PROFILE
@@ -183,48 +186,36 @@ public class PageFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
-        TextView ListingsHeader = (TextView) view.findViewById(R.id.listings_header);
+        ListingsHeader = (TextView) view.findViewById(R.id.listings_header);
+        searchQuery = (EditText) view.findViewById(R.id.searchField);
         ListingsHeader.setText("All Listings");
 
-        Button viewPost = (Button) view.findViewById(R.id.temp_view_post);
-        viewPost.setOnClickListener(new View.OnClickListener() {
+        Button submitPost = (Button) view.findViewById(R.id.submitSearch);
+        submitPost.setOnClickListener(new View.OnClickListener() {
+            boolean searchSubmitted = false;
             @Override
             public void onClick(View view) {
-                String messageId = "-KgSb_iZ4JOSNTm7kmhe";
-                Intent intent = new Intent(getActivity(), ViewPostActivity.class);
-                intent.putExtra("messageId", messageId);
-                startActivity(intent);
+                String query = searchQuery.getText().toString().trim();
+                if(!TextUtils.isEmpty(query) && !searchSubmitted) {
+                    view.setBackgroundResource(R.drawable.ic_clear_black_24dp);
+                    ListingsHeader.setText("Search: '" + query + "'");
+                    searchSubmitted = true;
+                    getPostsByQuery(query);
+                } else if (searchSubmitted) {
+                    searchQuery.getText().clear();
+                    view.setBackgroundResource(R.drawable.places_ic_search);
+                    ListingsHeader.setText("All Listings");
+                    searchSubmitted = false;
+                    getRecentPosts();
+                }
+
             }
         });
 
         if (myType == Type.TRANSACTIONS) {
             ListingsHeader.setText("Transactions");
         }
-
-
-        Query postsQuery = mDatabase.child("posts").orderByKey();
-
-
-        postsQuery.limitToFirst(50).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String key = snapshot.getKey();
-                    keyData.add(0, key);
-                    Post post = snapshot.getValue(Post.class);
-                    itemsData.add(0,post);
-                }
-                ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
-                recyclerView.setAdapter(adapter);
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-
-
+       getRecentPosts();
     }
 
     /**
@@ -320,28 +311,7 @@ public class PageFragment extends Fragment {
             case LISTINGS:
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
 
-                Query postsQuery = mDatabase.child("posts").orderByKey();
-
-
-                postsQuery.limitToFirst(50).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        keyData.clear();
-                        itemsData.clear();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            String key = snapshot.getKey();
-                            keyData.add(0, key);
-                            Post post = snapshot.getValue(Post.class);
-                            itemsData.add(0,post);
-                        }
-                        ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
-                        recyclerView.setAdapter(adapter);
-
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+                getRecentPosts();
 
                 break;
             case TRANSACTIONS:
@@ -406,5 +376,56 @@ public class PageFragment extends Fragment {
                 break;
         }
         layoutContainer.startAnimation(fadeOut);
+    }
+
+    private void getRecentPosts() {
+        Query postsQuery = mDatabase.child("posts").orderByKey();
+
+
+        postsQuery.limitToFirst(50).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                keyData.clear();
+                itemsData.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String key = snapshot.getKey();
+                    keyData.add(0, key);
+                    Post post = snapshot.getValue(Post.class);
+                    itemsData.add(0,post);
+                }
+                ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
+                recyclerView.setAdapter(adapter);
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void getPostsByQuery(String queryWord) {
+        String search = queryWord.replaceAll("\\s+","");
+        Query postsQuery = mDatabase.child("posts").orderByChild("queryTitle")
+                .startAt(search).endAt(search + "\uf8ff");
+
+        postsQuery.limitToFirst(50).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                keyData.clear();
+                itemsData.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String key = snapshot.getKey();
+                    keyData.add(0, key);
+                    Post post = snapshot.getValue(Post.class);
+                    itemsData.add(0,post);
+                }
+                ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
+                recyclerView.setAdapter(adapter);
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 }
