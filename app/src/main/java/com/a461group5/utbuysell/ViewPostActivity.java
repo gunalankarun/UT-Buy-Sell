@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a461group5.utbuysell.models.Post;
+import com.a461group5.utbuysell.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,9 +33,8 @@ public class ViewPostActivity extends AppCompatActivity {
     private TextView seller_name;
     private TextView item_price;
     private TextView description;
-    private TextView meeting_location;
-    private TextView meeting_time;
-    private Button mMessageButton;
+    private TextView categories;
+
     private Button mFavoriteButton;
     private FloatingActionButton floatingActionButton;
 
@@ -56,36 +56,17 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-
+        // TODO: Do ImageView Stuff
 
         // all set text or set image will be set based on data from firebase
         item_name = (TextView) findViewById(R.id.view_post_name);
-        item_name.setText("Item Name");
-
         seller_name = (TextView) findViewById(R.id.view_post_seller);
-        seller_name.setText("Seller Name");
-
         item_price = (TextView) findViewById(R.id.view_post_price);
-        item_price.setText("Item Price");
-
         description = (TextView) findViewById(R.id.view_post_description);
-        description.setText("Description of Item or Items being sold.");
-
-        //  image related
-        // still not sure how to add in images or how to check if the xml image code is correct
-        ImageView image = (ImageView) findViewById(R.id.view_post_picture1);
-        //image.setImageURI();
-
-        TextView item_tags = (TextView) findViewById(R.id.view_post_tags);
-        item_tags.setText("Comma Seperated Item Tags");
-
-        meeting_location = (TextView) findViewById(R.id.view_post_meeting_location);
-        meeting_location.setText("Meeting Location");
-
-        meeting_time = (TextView) findViewById(R.id.view_post_meeting_time);
-        meeting_time.setText("Meeting Time");
-
+        categories = (TextView) findViewById(R.id.view_post_tags);
         mFavoriteButton = (Button) findViewById(R.id.view_post_favorite);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_message_button);
+
         mFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +74,6 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         });
 
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_message_button);
         //floatingButtonAnimateIn();
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +81,46 @@ public class ViewPostActivity extends AppCompatActivity {
                 messageSeller();
             }
         });
+
+
+        FirebaseDatabase.getInstance().getReference("posts/" + postId).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Post currentPost = dataSnapshot.getValue(Post.class);
+
+                        item_name.setText(currentPost.title);
+
+                        seller_name.setText(currentPost.seller);
+                        item_price.setText("Price: $" + String.format("%.2f", currentPost.price));
+                        description.setText("Description: " + currentPost.description);
+                        String cats = "";
+                        for (String c : currentPost.categories.keySet()) {
+                            cats = c + ",";
+                        }
+                        categories.setText("Categories: " + cats.substring(0,cats.length()-1));
+
+                        FirebaseDatabase.getInstance().getReference("users/" + currentPost.seller).
+                                addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        User seller_user = dataSnapshot.getValue(User.class);
+                                        seller_name.setText("Seller: " + seller_user.getName());
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
     }
 

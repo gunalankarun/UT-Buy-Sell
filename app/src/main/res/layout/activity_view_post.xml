@@ -96,24 +96,6 @@
                 android:paddingBottom="16dp"
                 />
 
-            <TextView
-                android:id= "@+id/view_post_meeting_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                />
-
-            <TextView
-                android:id= "@+id/view_post_meeting_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                />
-
             <Button
                 android:id="@+id/view_post_favorite"
                 android:layout_width="match_parent"
