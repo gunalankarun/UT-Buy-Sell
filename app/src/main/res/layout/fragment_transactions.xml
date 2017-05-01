@@ -14,18 +14,34 @@
         android:textSize="24sp"
         android:textColor="@color/colorAccent" />
 
+    <Button
+        android:id="@+id/view_favorite_posts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Your Favorite Posts" />
+
+    <Button
+        android:id="@+id/view_seller_posts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Your Sale Items" />
 
     <FrameLayout
         android:id="@+id/fragment_transaction_frameLayout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="344dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_transaction_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="366dp" />
 
     </FrameLayout>
+
+
+
 
 </LinearLayout>
