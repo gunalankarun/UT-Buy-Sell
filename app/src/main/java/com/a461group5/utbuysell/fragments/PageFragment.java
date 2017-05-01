@@ -64,7 +64,9 @@ public class PageFragment extends Fragment {
     //variables for Transaction
     private RecyclerView recyclerViewTrans;
     private RecyclerView.LayoutManager layoutManagerTrans;
-
+    private ArrayList<Post> allPosts = new ArrayList<Post>();
+    private ArrayList<String> allKeys = new ArrayList<String>();
+    String pID;
     //private FrameLayout fragmentContainer;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -82,6 +84,7 @@ public class PageFragment extends Fragment {
     //////////////////////////////////////////////////
     EditText searchQuery;
     TextView ListingsHeader;
+    TextView TransListingsHeader;
 
     private enum Type {
         LISTINGS, TRANSACTIONS, INBOX, PROFILE
@@ -117,7 +120,7 @@ public class PageFragment extends Fragment {
             myType = Type.TRANSACTIONS;
             View view = inflater.inflate(R.layout.fragment_transactions, container, false);
             //initTransactions(view, "favoritePosts
-            initTransactions(view, "sellerPosts", "Your Transactions");
+            initTransactions(view);
             return view;
         } else {
             myType = Type.LISTINGS;
@@ -326,32 +329,80 @@ public class PageFragment extends Fragment {
      * Init Transactions View (Seller Posts)
      * TODO: Implement this
      */
-    private void initTransactions(View view, String typeTransaction, String titleOfPage) {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
-        Query userPostsQuery = userRef.child(typeTransaction);
+    private void initTransactions(View view) {
 
         recyclerViewTrans = (RecyclerView) view.findViewById(R.id.fragment_transaction_recycler_view);
         recyclerViewTrans.setHasFixedSize(true);
         layoutManagerTrans = new LinearLayoutManager(getActivity());
         recyclerViewTrans.setLayoutManager(layoutManager);
 
-        ListingsHeader = (TextView) view.findViewById(R.id.transaction_header);
+        TransListingsHeader = (TextView) view.findViewById(R.id.transaction_header);
 
-        ListingsHeader.setText(titleOfPage);
+        TransListingsHeader.setText("Your Transactions");
+
+
+        Button favoritePosts = (Button) view.findViewById(R.id.view_favorite_posts);
+        Button sellerPosts = (Button) view.findViewById(R.id.view_favorite_posts);
+        favoritePosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getRecentTransactions("favoritePosts");
+
+            }
+        });
+
+        sellerPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getRecentTransactions("sellerPosts");
+
+
+            }
+        });
+
+
+
+    }
+
+
+    private void getRecentTransactions(String typeTransaction) {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
+        Query userPostsQuery = userRef.child(typeTransaction);
+        allPosts.clear();
+        allKeys.clear();
+
 
 
         userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<Post> allPosts = new ArrayList<Post>();
-                ArrayList<String> allKeys = new ArrayList<String>();
+
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String key = snapshot.getKey();
-                        allKeys.add(0, key);
-                        Post post = snapshot.getValue(Post.class);
-                        allPosts.add(0,post);
+                        pID = snapshot.getKey();
+
+                        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("posts/");
+                        postRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                for (DataSnapshot post: snapshot.getChildren()) {
+                                    //this is all you need to get a specific post by PID
+                                    if (post.getKey().equals(pID)){
+                                        Post wantedPost = post.getValue(Post.class);
+                                        allPosts.add(0,wantedPost);
+                                    }
+
+
+                                }
+
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
                     }
                 }
                 ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
@@ -363,6 +414,7 @@ public class PageFragment extends Fragment {
 
             }
         });
+
 
     }
 
@@ -459,7 +511,7 @@ public class PageFragment extends Fragment {
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
                 break;
             case TRANSACTIONS:
-                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_transaction_container);
                 break;
             case INBOX:
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_inbox_container);
