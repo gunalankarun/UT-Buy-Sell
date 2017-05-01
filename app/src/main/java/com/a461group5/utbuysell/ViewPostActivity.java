@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.a461group5.utbuysell.models.Post;
 import com.a461group5.utbuysell.models.User;
@@ -36,6 +37,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.Map;
 
@@ -51,8 +54,8 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private ImageView image1;
 
-    private Button mFavoriteButton;
     private FloatingActionButton floatingActionButton;
+    private LikeButton starButton;
 
     String postId;
 
@@ -81,18 +84,44 @@ public class ViewPostActivity extends AppCompatActivity {
         item_price = (TextView) findViewById(R.id.view_post_price);
         description = (TextView) findViewById(R.id.view_post_description);
         categories = (TextView) findViewById(R.id.view_post_tags);
-        mFavoriteButton = (Button) findViewById(R.id.view_post_favorite);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_message_button);
         image1 = (ImageView) findViewById(R.id.view_post_picture1);
+        starButton = (LikeButton) findViewById(R.id.star_button);
 
         context = ViewPostActivity.this;
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
+        starButton.setOnLikeListener(new OnLikeListener() {
             @Override
-            public void onClick(View view) {
-                favoritePost();
+            public void liked(LikeButton likeButton) {
+                mDatabase.child("users").child(user.getUid()).child("favoritePosts").child(postId).setValue(true);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                mDatabase.child("users").child(user.getUid()).child("favoritePosts").child(postId).setValue(false);
             }
         });
+
+        FirebaseDatabase.getInstance().getReference("users/" + user.getUid() + "/favoritePosts").
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            Map<String, Boolean> favs = (Map<String, Boolean>) dataSnapshot.getValue();
+                            for (Map.Entry<String, Boolean> entry : favs.entrySet())
+                                if (entry.getValue() == true && entry.getKey().equals(postId)) {
+                                    starButton.setLiked(true);
+                                    break;
+                                }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
         //floatingButtonAnimateIn();
 
@@ -186,22 +215,8 @@ public class ViewPostActivity extends AppCompatActivity {
 
     }
 
-    private void favoritePost() {
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        // Add favoritePost reference to User
-        mDatabase.child("users").child(user.getUid()).child("favoritePosts").child(postId).setValue(true);
-
-        //Add user to Post's favorite Map
-        mDatabase.child("posts").child(postId).child("favoritedUsers").child(user.getUid()).setValue(true);
-
-    }
-
     private void messageSeller() {
-        favoritePost();
-
-
+        starButton.setLiked(true);
 
         FirebaseDatabase.getInstance().getReference("posts/" + postId).
                 addListenerForSingleValueEvent(new ValueEventListener() {
