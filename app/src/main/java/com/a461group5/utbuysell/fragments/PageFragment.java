@@ -29,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.a461group5.utbuysell.MainActivity;
 import com.a461group5.utbuysell.MessageActivity;
 import com.a461group5.utbuysell.R;
 import com.a461group5.utbuysell.adapters.ListingsAdapter;
@@ -115,9 +114,11 @@ public class PageFragment extends Fragment {
             return view;
         } else if (getArguments().getInt("index", 0) == 1) {
             myType = Type.TRANSACTIONS;
-            View view = inflater.inflate(R.layout.fragment_transactions, container, false);
+            //View view = inflater.inflate(R.layout.fragment_transactions, container, false);
+            View view = inflater.inflate(R.layout.fragment_listings, container, false);
+            initListings(view);
             //initTransactions(view, "favoritePosts
-            initTransactions(view, "sellerPosts", "Your Transactions");
+            //initTransactions(view, "sellerPosts", "Your Transactions");
             return view;
         } else {
             myType = Type.LISTINGS;
@@ -408,7 +409,7 @@ public class PageFragment extends Fragment {
 
                 break;
             case TRANSACTIONS:
-                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_transaction_container);
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
                 break;
             case INBOX:
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_inbox_container);
