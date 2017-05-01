@@ -369,8 +369,9 @@ public class PageFragment extends Fragment {
 
         if (myType == Type.TRANSACTIONS) {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
-            Query userPostsQuery = userRef.child(typeTransaction);
+            //DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
+
+            Query userPostsQuery = mDatabase.child("users").child(typeTransaction);
             allPosts.clear();
             allKeys.clear();
 
