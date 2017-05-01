@@ -13,9 +13,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.a461group5.utbuysell.models.Post;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,10 +43,11 @@ public class CreatePostActivity extends AppCompatActivity {
     private EditText mCategoriesField;
     private Button mSubmitButton;
     private Button mCancelButton;
-    private Button mPostPictures;
 
     private StorageReference mStorageRef;
     private Uri mOutputFileUri;
+
+    private ImageView createImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +66,18 @@ public class CreatePostActivity extends AppCompatActivity {
         mDescriptionField = (EditText) findViewById(R.id.create_post_description);
         mPriceField = (EditText) findViewById(R.id.create_post_price);
         mCategoriesField = (EditText) findViewById(R.id.create_post_categories);
-        mPostPictures = (Button) findViewById(R.id.create_post_images);
-        mPostPictures.setOnClickListener(new View.OnClickListener() {
+        createImage = (ImageView) findViewById(R.id.create_post_image);
+        createImage.setImageDrawable(this.getDrawable(R.drawable.shopping));
+
+
+
+        createImage.setOnClickListener(new View.OnClickListener() {
             //@Override
             public void onClick(View v) {
                 openImageIntent();
             }
         });
+
 
         mSubmitButton = (Button) findViewById(R.id.create_post_submit);
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +155,14 @@ public class CreatePostActivity extends AppCompatActivity {
 
                 if (!isCamera) {
                     mOutputFileUri = data == null ? null : data.getData();
+                    if (mOutputFileUri != null) {
+                        Glide
+                            .with(this)
+                            .load(mOutputFileUri) // the uri you got from Firebase
+                            .fitCenter()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(createImage); //Your imageView variable
+                    }
                 }
 
             }
