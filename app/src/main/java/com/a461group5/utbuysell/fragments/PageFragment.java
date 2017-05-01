@@ -366,58 +366,60 @@ public class PageFragment extends Fragment {
 
 
     private void getRecentTransactions(String typeTransaction) {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
-        Query userPostsQuery = userRef.child(typeTransaction);
-        allPosts.clear();
-        allKeys.clear();
+
+        if (myType == Type.TRANSACTIONS) {
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
+            Query userPostsQuery = userRef.child(typeTransaction);
+            allPosts.clear();
+            allKeys.clear();
 
 
+            userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-        userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            pID = snapshot.getKey();
 
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        pID = snapshot.getKey();
+                            Query postsQ = mDatabase.child("posts");
+                            postsQ.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
+                                    for (DataSnapshot post : snapshot.getChildren()) {
+                                        //this is all you need to get a specific post by PID
+                                        if (post.getKey().equals(pID)) {
+                                            Post wantedPost = post.getValue(Post.class);
+                                            allPosts.add(0, wantedPost);
+                                        }
 
-                        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("posts/");
-                        postRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-                                for (DataSnapshot post: snapshot.getChildren()) {
-                                    //this is all you need to get a specific post by PID
-                                    if (post.getKey().equals(pID)){
-                                        Post wantedPost = post.getValue(Post.class);
-                                        allPosts.add(0,wantedPost);
+
                                     }
-
 
                                 }
 
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
+                                }
+                            });
 
+                        }
                     }
+                    ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
+                    recyclerViewTrans.setAdapter(adapter);
                 }
-                ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
-                recyclerViewTrans.setAdapter(adapter);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
 
 
+        }
     }
-
 
 
     private void openImageIntent() {
