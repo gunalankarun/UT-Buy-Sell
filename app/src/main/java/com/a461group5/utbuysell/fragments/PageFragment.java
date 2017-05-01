@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.a461group5.utbuysell.MessageActivity;
 import com.a461group5.utbuysell.R;
@@ -63,7 +64,9 @@ public class PageFragment extends Fragment {
     //variables for Transaction
     private RecyclerView recyclerViewTrans;
     private RecyclerView.LayoutManager layoutManagerTrans;
-
+    private ArrayList<Post> allPosts = new ArrayList<Post>();
+    private ArrayList<String> allKeys = new ArrayList<String>();
+    String pID;
     //private FrameLayout fragmentContainer;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -81,6 +84,7 @@ public class PageFragment extends Fragment {
     //////////////////////////////////////////////////
     EditText searchQuery;
     TextView ListingsHeader;
+    TextView TransListingsHeader;
 
     private enum Type {
         LISTINGS, TRANSACTIONS, INBOX, PROFILE
@@ -114,11 +118,8 @@ public class PageFragment extends Fragment {
             return view;
         } else if (getArguments().getInt("index", 0) == 1) {
             myType = Type.TRANSACTIONS;
-            //View view = inflater.inflate(R.layout.fragment_transactions, container, false);
-            View view = inflater.inflate(R.layout.fragment_listings, container, false);
-            initListings(view);
-            //initTransactions(view, "favoritePosts
-            //initTransactions(view, "sellerPosts", "Your Transactions");
+            View view = inflater.inflate(R.layout.fragment_transactions, container, false);
+            initTransactions(view);
             return view;
         } else {
             myType = Type.LISTINGS;
@@ -325,48 +326,107 @@ public class PageFragment extends Fragment {
 
     /**
      * Init Transactions View (Seller Posts)
-     * TODO: Implement this
      */
-    private void initTransactions(View view, String typeTransaction, String titleOfPage) {
-//        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
-//        Query userPostsQuery = userRef.child(typeTransaction);
-//
-//        recyclerViewTrans = (RecyclerView) view.findViewById(R.id.fragment_transaction_recycler_view);
-//        recyclerViewTrans.setHasFixedSize(true);
-//        layoutManagerTrans = new LinearLayoutManager(getActivity());
-//        recyclerViewTrans.setLayoutManager(layoutManager);
-//
-//        ListingsHeader = (TextView) view.findViewById(R.id.transaction_header);
-//
-//        ListingsHeader.setText(titleOfPage);
-//
-//
-//        userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                ArrayList<Post> allPosts = new ArrayList<Post>();
-//                ArrayList<String> allKeys = new ArrayList<String>();
-//                if (dataSnapshot.exists()) {
-//                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                        String key = snapshot.getKey();
-//                        allKeys.add(0, key);
-//                        Post post = snapshot.getValue(Post.class);
-//                        allPosts.add(0,post);
-//                    }
-//                }
-//                ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
-//                recyclerViewTrans.setAdapter(adapter);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+    private void initTransactions(View view) {
+
+        recyclerViewTrans = (RecyclerView) view.findViewById(R.id.fragment_transaction_recycler_view);
+        recyclerViewTrans.setHasFixedSize(true);
+        layoutManagerTrans = new LinearLayoutManager(getActivity());
+        recyclerViewTrans.setLayoutManager(layoutManager);
+
+        TransListingsHeader = (TextView) view.findViewById(R.id.transaction_header);
+
+        TransListingsHeader.setText("Your Transactions");
+
+
+        Button favoritePosts = (Button) view.findViewById(R.id.view_favorite_posts);
+        Button sellerPosts = (Button) view.findViewById(R.id.view_seller_posts);
+        favoritePosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getRecentTransactions("favoritePosts");
+
+            }
+        });
+
+        sellerPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getRecentTransactions("sellerPosts");
+
+
+            }
+        });
+
+
 
     }
 
+
+    private void getRecentTransactions(String typeTransaction) {
+
+        if (myType == Type.TRANSACTIONS) {
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            //DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
+
+            Query userPostsQuery = mDatabase.child("users").child(user.getUid()).child(typeTransaction);
+            allPosts.clear();
+            allKeys.clear();
+
+
+            userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+
+                        ArrayList<String> keys = new ArrayList<String>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            pID = snapshot.getKey();
+                            keys.add(pID);
+                        }
+
+                        final ArrayList<String> finalKeys = new ArrayList<String>(keys);
+                        Query postsQ = mDatabase.child("posts");
+                        postsQ.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                for (DataSnapshot post : snapshot.getChildren()) {
+                                    for (String k : finalKeys) {
+                                        if (post.getKey().equals(k)) {
+                                            Post wantedPost = post.getValue(Post.class);
+                                            allPosts.add(0, wantedPost);
+                                            allKeys.add(0,k);
+                                            Toast.makeText(getActivity(), k,
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+
+                                }
+                                ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
+                                recyclerViewTrans.setAdapter(adapter);
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+    }
 
 
     private void openImageIntent() {
@@ -409,7 +469,7 @@ public class PageFragment extends Fragment {
 
                 break;
             case TRANSACTIONS:
-                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_transaction_container);
                 break;
             case INBOX:
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_inbox_container);
@@ -460,7 +520,7 @@ public class PageFragment extends Fragment {
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
                 break;
             case TRANSACTIONS:
-                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_transaction_container);
                 break;
             case INBOX:
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_inbox_container);
