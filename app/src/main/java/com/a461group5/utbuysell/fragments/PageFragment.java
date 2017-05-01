@@ -469,7 +469,7 @@ public class PageFragment extends Fragment {
 
                 break;
             case TRANSACTIONS:
-                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_listings_container);
+                layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_transaction_container);
                 break;
             case INBOX:
                 layoutContainer = (LinearLayout) view.findViewById(R.id.fragment_inbox_container);
