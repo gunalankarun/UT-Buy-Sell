@@ -406,6 +406,7 @@ public class PageFragment extends Fragment {
                                 ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
                                 recyclerViewTrans.setAdapter(adapter);
 
+
                             }
 
                             @Override
@@ -416,6 +417,8 @@ public class PageFragment extends Fragment {
 
                     }
 
+
+
                 }
 
                 @Override
@@ -423,6 +426,8 @@ public class PageFragment extends Fragment {
 
                 }
             });
+
+
 
 
         }
