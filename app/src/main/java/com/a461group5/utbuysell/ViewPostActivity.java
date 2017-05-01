@@ -1,8 +1,11 @@
 package com.a461group5.utbuysell;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -13,9 +16,13 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.a461group5.utbuysell.models.Post;
 import com.a461group5.utbuysell.models.User;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,10 +45,14 @@ public class ViewPostActivity extends AppCompatActivity {
     private TextView description;
     private TextView categories;
 
+    private ImageView image1;
+
     private Button mFavoriteButton;
     private FloatingActionButton floatingActionButton;
 
     String postId;
+
+    private Context context;
 
 
     @Override
@@ -69,6 +80,9 @@ public class ViewPostActivity extends AppCompatActivity {
         categories = (TextView) findViewById(R.id.view_post_tags);
         mFavoriteButton = (Button) findViewById(R.id.view_post_favorite);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_message_button);
+        image1 = (ImageView) findViewById(R.id.view_post_picture1);
+
+        context = ViewPostActivity.this;
 
         mFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +132,29 @@ public class ViewPostActivity extends AppCompatActivity {
                                     }
                                 });
 
+                        if(currentPost.imagePaths != null) {
+                            for (String imgPath : currentPost.imagePaths.keySet()) {
+                                Task<Uri> uri = FirebaseStorage.getInstance().getReference().child("postImages/").
+                                        child(postId).child(imgPath).getDownloadUrl();
+
+                                uri.addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        //holder.mImageView.setImageBitmap(getImageBitmap(task.getResult().toString()));
+                                        Uri uri = task.getResult();
+                                        Glide
+                                                .with(context)
+                                                .load(uri) // the uri you got from Firebase
+                                                .centerCrop()
+                                                .into(image1); //Your imageView variable
+                                    }
+                                });
+
+                            }
+                        } else {
+                            //put default picture here
+                            image1.setImageDrawable(context.getDrawable(R.drawable.shopping));
+                        }
                     }
 
                     @Override

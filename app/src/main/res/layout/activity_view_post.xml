@@ -70,22 +70,11 @@
 
                     <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="100dp"
                         android:id="@+id/view_post_picture1"
 
                         />
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/view_post_picture2"
-                        />
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/view_post_picture3"
-                        />
-
-                </LinearLayout>
+                    </LinearLayout>
             </ScrollView>
 
             <TextView
