@@ -112,4 +112,9 @@ public class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ViewHo
         return mDataset.size();
     }
 
+    public void clear() {
+        mDataset.clear();
+        postIds.clear();
+    }
+
 }
