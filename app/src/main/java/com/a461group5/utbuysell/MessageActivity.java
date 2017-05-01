@@ -49,6 +49,10 @@ public class MessageActivity extends Activity {
         chatId = intent.getStringExtra("CHAT_ID");
         receiverId = intent.getStringExtra("sellerId");
 
+        if (intent.getStringExtra("notification") != null) {
+            //MessagingService.removeNotification(chatId);
+        }
+
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         //Need to distinguish if this is the first time starting this chat

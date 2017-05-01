@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.a461group5.utbuysell.MessageActivity;
 import com.a461group5.utbuysell.R;
+import com.a461group5.utbuysell.receivers.NotificationBroadcastReceiver;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -28,17 +29,22 @@ public class MessagingService extends FirebaseMessagingService {
 
 
 
-    private int maxNotificationId = 0;
-    HashMap<String, NotificationBundle> activeNotifications = new HashMap<String, NotificationBundle>();
+    public static int numActive = 0;
+    public static HashMap<String, NotificationBundle> activeNotifications = new HashMap<String, NotificationBundle>();
 
 
+    public static synchronized void removeNotification(String chatId) {
+        activeNotifications.remove(chatId);
+        numActive--;
+        if (numActive < 0) numActive = 0;
+    }
     /**
      * This class keeps track of active notification's history of unseen messages.
      */
     private class NotificationBundle {
         int id; //notitication id
         //TODO: decide if we want to display more than 1 message on notification or not.
-        final int NUM_MESSAGES = 1; //we will only display the 5 latest messages
+        final int NUM_MESSAGES = 4; //we will only display the 5 latest messages
         LinkedList<String> messages = new LinkedList<String>(); //body of messages
         NotificationBundle(int id) {
             this.id = id;
@@ -171,7 +177,7 @@ public class MessagingService extends FirebaseMessagingService {
      * Create and show a simple notification containing the received FCM message.
      *
      */
-    private void sendNotification(Map<String, String>  payload) {
+    private synchronized void sendNotification(Map<String, String>  payload) {
         /**
          * Payload structure:
          * notification: {
@@ -189,7 +195,8 @@ public class MessagingService extends FirebaseMessagingService {
         NotificationBundle notification = null;
         //Check if a notification for this specific chat already exists
         if(!activeNotifications.containsKey(chatId)) {
-            notificationId = maxNotificationId++; //increment max id after assigning current notification
+            numActive++;
+            notificationId = numActive - 1; //increment max id after assigning current notification
             notification = new NotificationBundle(notificationId);
             activeNotifications.put(chatId, notification);
             notification.addMessage(body);
@@ -199,18 +206,23 @@ public class MessagingService extends FirebaseMessagingService {
             notification.addMessage(body);
         }
         intent.putExtra("CHAT_ID", chatId);
+        intent.putExtra("notification", "hi");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
+
+
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(title)
-                .setContentText(notification.getMsgList())
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(notification.getMsgList()))
                 .setSmallIcon(R.mipmap.ic_launcher) //TODO: make an actual notification icon
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+                .setDeleteIntent(getDeleteIntent(chatId));
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -219,5 +231,12 @@ public class MessagingService extends FirebaseMessagingService {
 
     }
 
+    protected PendingIntent getDeleteIntent(String chatId)
+    {
+        Intent intent = new Intent(this, NotificationBroadcastReceiver.class);
+        intent.putExtra("chatId", chatId);
+        intent.setAction("notification_cancelled");
+        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+    }
 
 }
