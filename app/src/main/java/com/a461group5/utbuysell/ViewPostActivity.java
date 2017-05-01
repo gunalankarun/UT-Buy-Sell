@@ -3,7 +3,9 @@ package com.a461group5.utbuysell;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,12 +17,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 
 import com.a461group5.utbuysell.models.Post;
 import com.a461group5.utbuysell.models.User;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,7 +74,6 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        // TODO: Do ImageView Stuff
 
         // all set text or set image will be set based on data from firebase
         item_name = (TextView) findViewById(R.id.view_post_name);
@@ -102,6 +105,24 @@ public class ViewPostActivity extends AppCompatActivity {
         Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         CoordinatorLayout layoutContainer = (CoordinatorLayout) findViewById(R.id.view_post_container);
         layoutContainer.startAnimation(fadeIn);
+
+
+        image1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewPostActivity.this, FullScreenImage.class);
+
+                image1.buildDrawingCache();
+                Bitmap image = image1.getDrawingCache();
+
+                Bundle extras = new Bundle();
+                extras.putString("postId", postId);
+                intent.putExtras(extras);
+                startActivity(intent);
+
+            }
+        });
+
 
         FirebaseDatabase.getInstance().getReference("posts/" + postId).
                 addListenerForSingleValueEvent(new ValueEventListener() {
@@ -140,12 +161,12 @@ public class ViewPostActivity extends AppCompatActivity {
                                 uri.addOnCompleteListener(new OnCompleteListener<Uri>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Uri> task) {
-                                        //holder.mImageView.setImageBitmap(getImageBitmap(task.getResult().toString()));
                                         Uri uri = task.getResult();
                                         Glide
                                                 .with(context)
                                                 .load(uri) // the uri you got from Firebase
-                                                .centerCrop()
+                                                .fitCenter()
+                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                                 .into(image1); //Your imageView variable
                                     }
                                 });

@@ -33,6 +33,9 @@
         <activity
             android:name=".MessageActivity"
             android:label="Send a message"></activity>
+        <activity
+            android:name=".FullScreenImage"
+            android:label="Full Screen Image"></activity>
 
         <service android:name=".services.MessagingService">
             <intent-filter>

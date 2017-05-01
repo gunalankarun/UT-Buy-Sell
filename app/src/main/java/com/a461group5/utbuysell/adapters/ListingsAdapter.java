@@ -15,6 +15,7 @@ import com.a461group5.utbuysell.R;
 import com.a461group5.utbuysell.ViewPostActivity;
 import com.a461group5.utbuysell.models.Post;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
@@ -93,6 +94,7 @@ public class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ViewHo
                                 .with(context)
                                 .load(uri) // the uri you got from Firebase
                                 .centerCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(holder.mImageView); //Your imageView variable
                     }
                 });
