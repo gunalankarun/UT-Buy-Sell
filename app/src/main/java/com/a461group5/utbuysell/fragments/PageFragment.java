@@ -265,10 +265,10 @@ public class PageFragment extends Fragment {
             }
         });
 
-       /* if (myType == Type.TRANSACTIONS) {
-            ListingsHeader.setText("Transactions");
-        }
-       getRecentPosts();*/
+//        if (myType == Type.TRANSACTIONS) {
+//            ListingsHeader.setText("Transactions");
+//        }
+       getRecentPosts();
 
 
     }
@@ -327,42 +327,42 @@ public class PageFragment extends Fragment {
      * TODO: Implement this
      */
     private void initTransactions(View view, String typeTransaction, String titleOfPage) {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
-        Query userPostsQuery = userRef.child(typeTransaction);
-
-        recyclerViewTrans = (RecyclerView) view.findViewById(R.id.fragment_transaction_recycler_view);
-        recyclerViewTrans.setHasFixedSize(true);
-        layoutManagerTrans = new LinearLayoutManager(getActivity());
-        recyclerViewTrans.setLayoutManager(layoutManager);
-
-        ListingsHeader = (TextView) view.findViewById(R.id.transaction_header);
-
-        ListingsHeader.setText(titleOfPage);
-
-
-        userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<Post> allPosts = new ArrayList<Post>();
-                ArrayList<String> allKeys = new ArrayList<String>();
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String key = snapshot.getKey();
-                        allKeys.add(0, key);
-                        Post post = snapshot.getValue(Post.class);
-                        allPosts.add(0,post);
-                    }
-                }
-                ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
-                recyclerViewTrans.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
+//        Query userPostsQuery = userRef.child(typeTransaction);
+//
+//        recyclerViewTrans = (RecyclerView) view.findViewById(R.id.fragment_transaction_recycler_view);
+//        recyclerViewTrans.setHasFixedSize(true);
+//        layoutManagerTrans = new LinearLayoutManager(getActivity());
+//        recyclerViewTrans.setLayoutManager(layoutManager);
+//
+//        ListingsHeader = (TextView) view.findViewById(R.id.transaction_header);
+//
+//        ListingsHeader.setText(titleOfPage);
+//
+//
+//        userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                ArrayList<Post> allPosts = new ArrayList<Post>();
+//                ArrayList<String> allKeys = new ArrayList<String>();
+//                if (dataSnapshot.exists()) {
+//                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                        String key = snapshot.getKey();
+//                        allKeys.add(0, key);
+//                        Post post = snapshot.getValue(Post.class);
+//                        allPosts.add(0,post);
+//                    }
+//                }
+//                ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
+//                recyclerViewTrans.setAdapter(adapter);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
     }
 
