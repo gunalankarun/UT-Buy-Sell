@@ -31,30 +31,13 @@
                 android:textAlignment="center"
                 android:textColor="@color/colorAccent" />
 
-
-            <ScrollView
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp"
-                        android:id="@+id/view_post_picture1"
-
-                        />
-                </LinearLayout>
-            </ScrollView>
-
+                android:layout_height="250dp"
+                android:id="@+id/view_post_picture1"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                />
 
             <TextView
                 android:id= "@+id/view_post_seller"
