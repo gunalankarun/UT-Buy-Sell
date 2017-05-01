@@ -370,6 +370,12 @@ public class PageFragment extends Fragment {
 
             Query userPostsQuery = mDatabase.child("users").child(user.getUid()).child(typeTransaction);
 
+            if (typeTransaction.equals("favoritePosts")) {
+                TransListingsHeader.setText("Your favorites");
+            } else {
+                TransListingsHeader.setText("Your posts");
+            }
+
             allPosts.clear();
             allKeys.clear();
             ListingsAdapter adapter = (ListingsAdapter) recyclerView.getAdapter();
