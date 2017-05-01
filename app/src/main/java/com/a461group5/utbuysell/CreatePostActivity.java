@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -43,6 +42,7 @@ public class CreatePostActivity extends AppCompatActivity {
     private EditText mCategoriesField;
     private Button mSubmitButton;
     private Button mCancelButton;
+    private Button mCancelPhotoButton;
 
     private StorageReference mStorageRef;
     private Uri mOutputFileUri;
@@ -96,6 +96,20 @@ public class CreatePostActivity extends AppCompatActivity {
                 CreatePostActivity.this.startActivity(myIntent);
             }
         });
+
+        mCancelPhotoButton = (Button) findViewById(R.id.cancelPhoto);
+        mCancelPhotoButton.setVisibility(View.INVISIBLE);
+        mCancelPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (createImage != null) {
+                    createImage.setImageDrawable(getDrawable(R.drawable.shopping));
+                }
+                mOutputFileUri = null;
+                mCancelPhotoButton.setVisibility(View.INVISIBLE);
+            }
+        });
+
     }
 
 
@@ -162,6 +176,7 @@ public class CreatePostActivity extends AppCompatActivity {
                             .fitCenter()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(createImage); //Your imageView variable
+                        mCancelPhotoButton.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -196,7 +211,7 @@ public class CreatePostActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             mSubmitButton.setEnabled(true);
             return;
-        }
+       }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
