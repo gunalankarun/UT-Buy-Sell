@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.a461group5.utbuysell.MainActivity;
 import com.a461group5.utbuysell.MessageActivity;
@@ -342,7 +343,7 @@ public class PageFragment extends Fragment {
 
 
         Button favoritePosts = (Button) view.findViewById(R.id.view_favorite_posts);
-        Button sellerPosts = (Button) view.findViewById(R.id.view_favorite_posts);
+        Button sellerPosts = (Button) view.findViewById(R.id.view_seller_posts);
         favoritePosts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -379,37 +380,45 @@ public class PageFragment extends Fragment {
             userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                     if (dataSnapshot.exists()) {
+
+                        ArrayList<String> keys = new ArrayList<String>();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             pID = snapshot.getKey();
+                            keys.add(pID);
+                        }
 
-                            Query postsQ = mDatabase.child("posts");
-                            postsQ.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot snapshot) {
-                                    for (DataSnapshot post : snapshot.getChildren()) {
-                                        //this is all you need to get a specific post by PID
-                                        if (post.getKey().equals(pID)) {
+                        final ArrayList<String> finalKeys = new ArrayList<String>(keys);
+                        Query postsQ = mDatabase.child("posts");
+                        postsQ.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                for (DataSnapshot post : snapshot.getChildren()) {
+                                    for (String k : finalKeys) {
+                                        if (post.getKey().equals(k)) {
                                             Post wantedPost = post.getValue(Post.class);
                                             allPosts.add(0, wantedPost);
+                                            allKeys.add(0,k);
+                                            Toast.makeText(getActivity(), k,
+                                                    Toast.LENGTH_SHORT).show();
                                         }
-
-
                                     }
 
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
 
                                 }
-                            });
+                                ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
+                                recyclerViewTrans.setAdapter(adapter);
 
-                        }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
                     }
-                    ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
-                    recyclerViewTrans.setAdapter(adapter);
+
                 }
 
                 @Override
