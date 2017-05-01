@@ -1,5 +1,7 @@
 package com.a461group5.utbuysell.models;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,9 +14,10 @@ public class User {
     String first_name;
     String last_name;
     String token;
+    public String profilePicturePath;
     Map<String, Boolean>  seller_posts;
     Map<String, Boolean> buyer_posts;
-    Map<String, Boolean> chats;
+    Map<String, String> chats;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -27,7 +30,18 @@ public class User {
         this.token = token;
         seller_posts = new HashMap<String, Boolean>();
         buyer_posts = new HashMap<String, Boolean>();
-        chats = new HashMap<String, Boolean>();
+        chats = new HashMap<String, String>();
+        this.profilePicturePath = "";
     }
 
+    @Exclude
+    public String getFirstName()
+    {
+        return first_name;
+    }
+
+    @Exclude
+    public String getName() {
+        return first_name + " " + last_name;
+    }
 }

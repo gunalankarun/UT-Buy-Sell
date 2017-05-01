@@ -75,4 +75,11 @@ public class Chat {
         return messages.get(messages.size() - 1);
     }
 
+    @Exclude
+    public String getOtherUser(String myId) {
+        for (String user : users.keySet()) {
+            if (!myId.equals(user)) return user;
+        }
+        return null;
+    }
 }

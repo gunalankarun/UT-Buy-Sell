@@ -20,7 +20,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 
 /**
@@ -85,6 +87,13 @@ public class LoginActivity extends AppCompatActivity  {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    //updating token in case it has changed, and InstanceIDService did not catch it
+                    DatabaseReference mDatabase;
+                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                    String token = FirebaseInstanceId.getInstance().getToken();
+                    if (token != null) mDatabase.child("users").child(user.getUid()).child("token").setValue(token);
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginActivity.this.startActivity(intent);
                 } else {

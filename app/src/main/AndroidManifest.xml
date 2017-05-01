@@ -13,50 +13,46 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
-
-        <activity
-            android:name=".LoginActivity">
+        <activity android:name=".MainActivity" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_activity_register">
-        </activity>
-
+            android:label="@string/title_activity_register"></activity>
         <activity
             android:name=".CreatePostActivity"
-            android:label="@string/title_activity_create_post">
-        </activity>
-
+            android:label="@string/title_activity_create_post"></activity>
         <activity
             android:name=".ViewPostActivity"
-            android:label="View Post">
-        </activity>
-
+            android:label="View Post"></activity>
         <activity
             android:name=".MessageActivity"
-            android:label="Send a message">
-        </activity>
+            android:label="Send a message"></activity>
+        <activity
+            android:name=".FullScreenImage"
+            android:label="Full Screen Image"></activity>
 
-        <service
-            android:name=".services.MessagingService">
+        <service android:name=".services.MessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.InstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-
-        <service
-            android:name=".services.InstanceIDService">
+        <receiver android:name=".receivers.NotificationBroadcastReceiver">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="notification_cancelled"/>
             </intent-filter>
-        </service>
+        </receiver>
 
     </application>
 

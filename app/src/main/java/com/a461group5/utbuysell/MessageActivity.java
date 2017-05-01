@@ -3,14 +3,17 @@ package com.a461group5.utbuysell;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a461group5.utbuysell.adapters.MessageAdapter;
 import com.a461group5.utbuysell.models.Chat;
+import com.a461group5.utbuysell.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +27,7 @@ public class MessageActivity extends Activity {
     private EditText messageBodyField;
     private String messageBody;
     private String path;
+    private String receiverId;
     private MessageAdapter messageAdapter;
     private ListView messagesList;
     private boolean firstTime = true;
@@ -43,43 +47,23 @@ public class MessageActivity extends Activity {
         //get chatId from the intent
         Intent intent = getIntent();
         chatId = intent.getStringExtra("CHAT_ID");
+        receiverId = intent.getStringExtra("sellerId");
+
+        if (intent.getStringExtra("notification") != null) {
+            //MessagingService.removeNotification(chatId);
+        }
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //Need to distinguish if this is the first time starting this chat
+        if (chatId != null) {
+            initDatabaseRef(chatId);
+            getName();
+        } else {
+            mDatabase = FirebaseDatabase.getInstance().getReference("chats");
+        }
 
 
-
-        path = "chats/" + chatId;
-        mDatabase = FirebaseDatabase.getInstance().getReference(path);
-        //mDatabase.setValue(new Chat("fbcUCSk389fpxtrh4nEQdfr2JM73", "RkB2gZcoRedfdIknTcA0dS8Oxgf2")); //debugging only
-
-        ValueEventListener chatListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Chat object and use the values to update the UI
-                 chat = dataSnapshot.getValue(Chat.class);
-
-
-                //Need to check if this first time this chat has been added to database
-                //If so then there are no messages and we shouldn't try to access the messages list
-                if (chat.getMessages() != null) {
-                    if (firstTime ) {
-                        for (Chat.Message m : chat.getMessages()) {
-                            displayMessage(m);
-                        }
-                        firstTime = false;
-                    } else {
-                        displayMessage(chat.getLastMessage());
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w("TAG", "loadPost:onCancelled", databaseError.toException());
-                // ...
-            }
-        };
-        mDatabase.addValueEventListener(chatListener);
 
         messageBodyField = (EditText) findViewById(R.id.messageBodyField);
 
@@ -93,12 +77,49 @@ public class MessageActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Please enter a message", Toast.LENGTH_LONG).show();
                     return;
                 }
+                if (chatId == null) {
+                    chatId = mDatabase.push().getKey(); //create a new chat in DB
+                    chat = new Chat(receiverId, user.getUid());
+                    mDatabase.child(chatId).setValue(chat);
+                    initDatabaseRef(chatId);
+
+
+
+
+                    //add this chat to both people's inboxes
+                    FirebaseDatabase.getInstance().getReference("users").child(receiverId)
+                            .child("convos").child(user.getUid()).setValue(chatId); //adding to other person's convo list
+                    FirebaseDatabase.getInstance().getReference("users").child(user.getUid())
+                            .child("convos").child(receiverId).setValue(chatId); //adding to this user's convo list
+
+
+                    //add this chat to both people's inboxes
+                    FirebaseDatabase.getInstance().getReference("users").child(receiverId)
+                            .child("chats").child(chatId).setValue(user.getDisplayName()); //adding to other person's inbox
+                    FirebaseDatabase.getInstance().getReference("users/" + receiverId). //adding to this user's inbox
+                            addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    User u = dataSnapshot.getValue(User.class);
+                                    FirebaseDatabase.getInstance().getReference("users").
+                                            child(user.getUid()).child("chats").child(chatId).
+                                            setValue(u.getName());
+                                    TextView view = (TextView) findViewById(R.id.nameBar);
+                                    view.setText(u.getName());
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                }
                 sendMessage(messageBody);
                 messageBodyField.getText().clear();
 
             }
         });
-        user = FirebaseAuth.getInstance().getCurrentUser();
+
     }
 
     void sendMessage(String msg) {
@@ -127,5 +148,61 @@ public class MessageActivity extends Activity {
         super.onDestroy();
     }
 
+    /**
+     * Sets FirebaseDB reference to correct path (ie make it point to where current chat messages are stored)
+     * @param chatId the id that points to the chat that the  current instance of this activity represents
+     */
+    private void initDatabaseRef(@NonNull String chatId) {
+        path = "chats/" + chatId;
+        mDatabase = FirebaseDatabase.getInstance().getReference(path);
+        ValueEventListener chatListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Chat object and use the values to update the UI
+                chat = dataSnapshot.getValue(Chat.class);
 
+
+                //Need to check if this first time this chat has been added to database
+                //If so then there are no messages and we shouldn't try to access the messages list
+                if (chat.getMessages() != null) {
+                    //also this listener triggers once as soon as it is registered
+                    //so we will load past messages at this time
+                    if (firstTime) {
+                        for (Chat.Message m : chat.getMessages()) {
+                            displayMessage(m);
+                        }
+                        firstTime = false;
+                    } else {
+                        displayMessage(chat.getLastMessage());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("TAG", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+        mDatabase.addValueEventListener(chatListener);
+    }
+
+    void getName() {
+        FirebaseDatabase.getInstance().getReference("users/" + user.getUid() + "/chats/" + chatId).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String name = (String) dataSnapshot.getValue();
+                        TextView view = (TextView) findViewById(R.id.nameBar);
+                        view.setText(name);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
 }

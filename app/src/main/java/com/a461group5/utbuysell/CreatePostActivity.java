@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -17,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.a461group5.utbuysell.models.Post;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,10 +42,12 @@ public class CreatePostActivity extends AppCompatActivity {
     private EditText mCategoriesField;
     private Button mSubmitButton;
     private Button mCancelButton;
-    private Button mPostPictures;
+    private Button mCancelPhotoButton;
 
     private StorageReference mStorageRef;
     private Uri mOutputFileUri;
+
+    private ImageView createImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +66,18 @@ public class CreatePostActivity extends AppCompatActivity {
         mDescriptionField = (EditText) findViewById(R.id.create_post_description);
         mPriceField = (EditText) findViewById(R.id.create_post_price);
         mCategoriesField = (EditText) findViewById(R.id.create_post_categories);
-        mPostPictures = (Button) findViewById(R.id.create_post_images);
-        mPostPictures.setOnClickListener(new View.OnClickListener() {
+        createImage = (ImageView) findViewById(R.id.create_post_image);
+        createImage.setImageDrawable(this.getDrawable(R.drawable.shopping));
+
+
+
+        createImage.setOnClickListener(new View.OnClickListener() {
             //@Override
             public void onClick(View v) {
                 openImageIntent();
             }
         });
+
 
         mSubmitButton = (Button) findViewById(R.id.create_post_submit);
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +96,20 @@ public class CreatePostActivity extends AppCompatActivity {
                 CreatePostActivity.this.startActivity(myIntent);
             }
         });
+
+        mCancelPhotoButton = (Button) findViewById(R.id.cancelPhoto);
+        mCancelPhotoButton.setVisibility(View.INVISIBLE);
+        mCancelPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (createImage != null) {
+                    createImage.setImageDrawable(getDrawable(R.drawable.shopping));
+                }
+                mOutputFileUri = null;
+                mCancelPhotoButton.setVisibility(View.INVISIBLE);
+            }
+        });
+
     }
 
 
@@ -122,7 +144,7 @@ public class CreatePostActivity extends AppCompatActivity {
         final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Source");
 
         // Add the camera options.
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+        //chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
 
         startActivityForResult(chooserIntent, 42);
     }
@@ -147,6 +169,15 @@ public class CreatePostActivity extends AppCompatActivity {
 
                 if (!isCamera) {
                     mOutputFileUri = data == null ? null : data.getData();
+                    if (mOutputFileUri != null) {
+                        Glide
+                            .with(this)
+                            .load(mOutputFileUri) // the uri you got from Firebase
+                            .fitCenter()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(createImage); //Your imageView variable
+                        mCancelPhotoButton.setVisibility(View.VISIBLE);
+                    }
                 }
 
             }
@@ -172,16 +203,15 @@ public class CreatePostActivity extends AppCompatActivity {
             return;
         }
 
-//        // Image detection
-        if (mOutputFileUri == null) {
-            Toast.makeText(CreatePostActivity.this, "Please select an Image",
+        float price = Float.parseFloat(priceText);
+        String[] categories = categoriesText.split(",");
+
+        if (price > 9999.99) {
+            Toast.makeText(CreatePostActivity.this, "Maximum price allowed is $9999.99 :(",
                     Toast.LENGTH_SHORT).show();
             mSubmitButton.setEnabled(true);
             return;
-        }
-
-        int price = Integer.parseInt(priceText);
-        String[] categories = categoriesText.split(",");
+       }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -207,38 +237,44 @@ public class CreatePostActivity extends AppCompatActivity {
             mDatabase.child("categories").child(category).child(key).setValue(true);
         }
 
-        // Saves Picture into storage
-        String uniqueName = getUniqueName();
-        StorageReference photoRef = mStorageRef.child("postImages").child(key).child(uniqueName);
-        photoRef.putFile(mOutputFileUri)
-                .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(CreatePostActivity.this, "Image Upload Success",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(CreatePostActivity.this, "Image Upload ERROR",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-        uniqueName = uniqueName.substring(0,uniqueName.indexOf("."));
-        mDatabase.child("posts").child(key).child("imagePaths").child(uniqueName).setValue(true);
+        if (mOutputFileUri != null) {
+            // Saves Picture into storage
+            String uniqueName = getUniqueName();
+            StorageReference photoRef = mStorageRef.child("postImages").child(key).child(uniqueName);
+            mDatabase.child("posts").child(key).child("imagePaths").child(uniqueName).setValue(true);
+            photoRef.putFile(mOutputFileUri)
+                    .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(CreatePostActivity.this, "Created Post!",
+                                    Toast.LENGTH_SHORT).show();
 
-        // Reenable Button
-        mSubmitButton.setEnabled(true);
 
-        Toast.makeText(CreatePostActivity.this, "Created Post!",
-                Toast.LENGTH_SHORT).show();
-        Intent myIntent = new Intent(CreatePostActivity.this, MainActivity.class);
-        CreatePostActivity.this.startActivity(myIntent);
+                            mSubmitButton.setEnabled(true);
+
+                            Intent myIntent = new Intent(CreatePostActivity.this, MainActivity.class);
+                            CreatePostActivity.this.startActivity(myIntent);
+                        }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Toast.makeText(CreatePostActivity.this, "Image Upload ERROR",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            Toast.makeText(CreatePostActivity.this, "Created Post!",
+                    Toast.LENGTH_SHORT).show();
+            
+            mSubmitButton.setEnabled(true);
+            Intent myIntent = new Intent(CreatePostActivity.this, MainActivity.class);
+            CreatePostActivity.this.startActivity(myIntent);
+        }
 
     }
 
     private String getUniqueName() {
-        return "img_"+ System.currentTimeMillis() + ".jpg";
+        return "img_"+ System.currentTimeMillis();
     }
 }
