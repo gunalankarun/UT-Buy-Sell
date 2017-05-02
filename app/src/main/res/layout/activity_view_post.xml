@@ -74,7 +74,16 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:paddingTop="16dp"
-                android:paddingBottom="8dp"
+                android:paddingBottom="16dp"
+                android:textSize="18sp"
+                />
+
+            <TextView
+                android:id= "@+id/view_post_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:paddingTop="16dp"
                 android:textSize="18sp"
                 />
 

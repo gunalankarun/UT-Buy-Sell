@@ -51,6 +51,7 @@ public class ViewPostActivity extends AppCompatActivity {
     private TextView item_price;
     private TextView description;
     private TextView categories;
+    private TextView status;
     private Button mClosePost;
 
     private ImageView image1;
@@ -85,6 +86,7 @@ public class ViewPostActivity extends AppCompatActivity {
         item_price = (TextView) findViewById(R.id.view_post_price);
         description = (TextView) findViewById(R.id.view_post_description);
         categories = (TextView) findViewById(R.id.view_post_tags);
+        status = (TextView) findViewById(R.id.view_post_status);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_message_button);
         image1 = (ImageView) findViewById(R.id.view_post_picture1);
         starButton = (LikeButton) findViewById(R.id.star_button);
@@ -172,6 +174,7 @@ public class ViewPostActivity extends AppCompatActivity {
                         item_name.setText(currentPost.title);
                         item_price.setText("Price: $" + String.format("%.2f", currentPost.price));
                         description.setText("Description: " + currentPost.description);
+                        status.setText("Status: " + currentPost.status);
                         String cats = "";
                         for (String c : currentPost.categories.keySet()) {
                             cats += c + ", ";

@@ -362,7 +362,7 @@ public class PageFragment extends Fragment {
     }
 
 
-    private void getRecentTransactions(String typeTransaction) {
+    private void getRecentTransactions(final String typeTransaction) {
 
         if (myType == Type.TRANSACTIONS) {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -405,8 +405,11 @@ public class PageFragment extends Fragment {
                                     for (String k : finalKeys) {
                                         if (post.getKey().equals(k)) {
                                             Post wantedPost = post.getValue(Post.class);
-                                            allPosts.add(0, wantedPost);
-                                            allKeys.add(0,k);
+                                            if (wantedPost.status.equals("Posted") || typeTransaction.equals("sellerPosts")) {
+                                                allPosts.add(0, wantedPost);
+                                                allKeys.add(0,k);
+                                            }
+
                                         }
                                     }
 
@@ -425,9 +428,6 @@ public class PageFragment extends Fragment {
                         });
 
                     }
-
-
-
                 }
 
                 @Override
@@ -435,9 +435,6 @@ public class PageFragment extends Fragment {
 
                 }
             });
-
-
-
 
         }
     }
