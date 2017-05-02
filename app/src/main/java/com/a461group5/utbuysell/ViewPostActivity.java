@@ -51,6 +51,7 @@ public class ViewPostActivity extends AppCompatActivity {
     private TextView item_price;
     private TextView description;
     private TextView categories;
+    private Button mClosePost;
 
     private ImageView image1;
 
@@ -87,9 +88,18 @@ public class ViewPostActivity extends AppCompatActivity {
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_message_button);
         image1 = (ImageView) findViewById(R.id.view_post_picture1);
         starButton = (LikeButton) findViewById(R.id.star_button);
+        mClosePost = (Button) findViewById(R.id.close_post);
 
         context = ViewPostActivity.this;
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+        mClosePost.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mDatabase.child("posts").child(postId).child("status").setValue("Closed");
+                ViewPostActivity.this.finish();
+            }
+        });
 
         starButton.setOnLikeListener(new OnLikeListener() {
             @Override
@@ -167,6 +177,10 @@ public class ViewPostActivity extends AppCompatActivity {
                             cats += c + ", ";
                         }
                         categories.setText("Categories: " + cats.substring(0,cats.length()-2));
+
+                        if (currentPost.seller.equals(user.getUid())) {
+                            mClosePost.setVisibility(View.VISIBLE);
+                        }
 
                         FirebaseDatabase.getInstance().getReference("users/" + currentPost.seller).
                                 addListenerForSingleValueEvent(new ValueEventListener() {

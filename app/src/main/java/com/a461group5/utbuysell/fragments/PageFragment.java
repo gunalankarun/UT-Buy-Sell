@@ -553,9 +553,11 @@ public class PageFragment extends Fragment {
                     itemsData.clear();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String key = snapshot.getKey();
-                        keyData.add(0, key);
                         Post post = snapshot.getValue(Post.class);
-                        itemsData.add(0,post);
+                        if (post.status.equals("Posted")) {
+                            keyData.add(0, key);
+                            itemsData.add(0,post);
+                        }
                     }
                     ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
                     recyclerView.setAdapter(adapter);
@@ -580,9 +582,11 @@ public class PageFragment extends Fragment {
                 itemsData.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String key = snapshot.getKey();
-                    keyData.add(0, key);
                     Post post = snapshot.getValue(Post.class);
-                    itemsData.add(0,post);
+                    if (post.status.equals("Posted")) {
+                        keyData.add(0, key);
+                        itemsData.add(0,post);
+                    }
                 }
                 ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
                 recyclerView.setAdapter(adapter);
