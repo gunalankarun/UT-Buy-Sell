@@ -39,7 +39,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true"></ImageView>
+                    android:layout_alignParentStart="true"/>
 
             </RelativeLayout>
 
@@ -54,13 +54,15 @@
                     android:ems="10"
                     android:hint="Title"
                     android:maxLength="25"
+
                     android:inputType="text" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+>
 
                 <EditText
                     android:id="@+id/create_post_description"
@@ -74,7 +76,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+>
 
                 <EditText
                     android:id="@+id/create_post_price"
@@ -88,7 +91,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                >
 
                 <EditText
                     android:id="@+id/create_post_categories"

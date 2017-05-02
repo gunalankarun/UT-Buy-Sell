@@ -36,6 +36,8 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textAlignment="center"
+        android:textColor = "@color/text"
+
         android:textStyle="italic" />
 
     <TextView
@@ -43,6 +45,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.1"
+        android:textColor = "@color/text"
+
         android:text="TextView"
         android:textAlignment="center" />
 
