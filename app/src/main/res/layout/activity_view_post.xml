@@ -45,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:paddingTop="16dp"
-                android:textColor="@color/text"
                 android:paddingBottom="16dp"
                 android:textSize="18sp"
                 />
@@ -57,7 +56,6 @@
                 android:textAlignment="center"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
-                android:textColor="@color/text"
                 android:textSize="18sp"
                 />
             <TextView
@@ -68,7 +66,6 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:textSize="18sp"
-                android:textColor="@color/text"
                 />
 
             <TextView
@@ -77,8 +74,8 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:paddingTop="16dp"
-                android:textColor="@color/text"
-                android:paddingBottom="8dp"
+                android:paddingBottom="16dp"
+                android:textSize="18sp"
                 />
 
             <TextView
@@ -86,8 +83,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="@color/text"
-                android:paddingTop="16dp"/>
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:textSize="18sp"
+                />
 
             <com.like.LikeButton
                 app:icon_type="Star"

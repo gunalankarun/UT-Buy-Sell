@@ -39,15 +39,13 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true"/>
+                    android:layout_alignParentStart="true"></ImageView>
 
             </RelativeLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/colorInactive"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/create_post_title"
@@ -56,16 +54,13 @@
                     android:ems="10"
                     android:hint="Title"
                     android:maxLength="25"
-                    android:textColor="@color/colorActiveSmall"
                     android:inputType="text" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/colorInactive"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/create_post_description"
@@ -73,16 +68,13 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Description"
-                    android:textColor="@color/colorActiveSmall"
                     android:inputType="text|textMultiLine" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/colorInactive"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/create_post_price"
@@ -90,17 +82,13 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Price"
-                    android:textColor="@color/colorActiveSmall"
                     android:inputType="number|numberDecimal" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/colorInactive"
-
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/create_post_categories"
@@ -108,7 +96,6 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Categories (separated by commas)"
-                    android:textColor="@color/colorActiveSmall"
                     android:inputType="text" />
 
             </android.support.design.widget.TextInputLayout>

@@ -28,7 +28,6 @@
                     android:padding="8dp"
                     android:paddingEnd="20dp"
                     android:paddingStart="20dp"
-                    android:textColor="@color/text"
                     android:textSize="18sp" />
 
                 <ImageView
@@ -49,7 +48,7 @@
                 android:layout_marginTop="50dp"
                 android:background="@drawable/rectangle"
                 android:text="TextView"
-                android:textColor="@color/text" />
+                android:textColor="@android:color/black" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

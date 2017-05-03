@@ -4,15 +4,14 @@
     <!--<color name="colorPrimaryDark">#D84315</color>-->
     <!--<color name="colorAccent">#FF4081</color>-->
 
-    <color name="colorPrimary">#BBBBBB</color>
-    <color name="colorPrimaryDark">#999999</color>
+    <color name="colorPrimary">#355555</color>
+    <color name="colorPrimaryDark">#33000000</color>
     <!--<color name="colorAccent">#e3aaaa</color>-->
-    <color name="colorAccent">#CF5300</color>
+    <color name="colorAccent">#ffa07a</color>
 
-    <color name="colorInactive">#FFFFFF</color>
-    <color name="colorActiveSmall">#000000</color>
-    <color name="text">#000000</color>
-    <color name="colorInactiveSmall">#FFFFFF</color>
+    <color name="colorInactive">#747474</color>
+    <color name="colorActiveSmall">#FFFFFF</color>
+    <color name="colorInactiveSmall">#50FFFFFF</color>
 
     <color name="color_tab_1">#455C65</color>
     <color name="color_tab_2">#00886A</color>

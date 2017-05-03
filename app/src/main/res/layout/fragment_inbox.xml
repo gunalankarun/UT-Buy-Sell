@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:textColor="@color/text"
+        android:textColor="@color/colorAccent"
         android:textSize="24sp" />
 
     <ListView

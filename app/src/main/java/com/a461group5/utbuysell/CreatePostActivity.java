@@ -14,8 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.TextView;
-import android.graphics.Color;
 
 import com.a461group5.utbuysell.models.Post;
 import com.bumptech.glide.Glide;
@@ -29,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -72,10 +69,6 @@ public class CreatePostActivity extends AppCompatActivity {
         createImage = (ImageView) findViewById(R.id.create_post_image);
         createImage.setImageDrawable(this.getDrawable(R.drawable.shopping));
 
-        mTitleField.setHintTextColor(Color.BLACK);
-        mDescriptionField.setHintTextColor(Color.BLACK);
-        mPriceField.setHintTextColor(Color.BLACK);
-        mCategoriesField.setHintTextColor(Color.BLACK);
 
 
         createImage.setOnClickListener(new View.OnClickListener() {
