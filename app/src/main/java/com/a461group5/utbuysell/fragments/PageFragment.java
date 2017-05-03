@@ -28,7 +28,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.a461group5.utbuysell.MessageActivity;
 import com.a461group5.utbuysell.R;
@@ -329,10 +328,10 @@ public class PageFragment extends Fragment {
      */
     private void initTransactions(View view) {
 
-        recyclerViewTrans = (RecyclerView) view.findViewById(R.id.fragment_transaction_recycler_view);
-        recyclerViewTrans.setHasFixedSize(true);
-        layoutManagerTrans = new LinearLayoutManager(getActivity());
-        recyclerViewTrans.setLayoutManager(layoutManager);
+        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_transaction_recycler_view);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
 
         TransListingsHeader = (TextView) view.findViewById(R.id.transaction_header);
 
@@ -363,16 +362,28 @@ public class PageFragment extends Fragment {
     }
 
 
-    private void getRecentTransactions(String typeTransaction) {
+    private void getRecentTransactions(final String typeTransaction) {
 
         if (myType == Type.TRANSACTIONS) {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             //DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
 
             Query userPostsQuery = mDatabase.child("users").child(user.getUid()).child(typeTransaction);
+
+            if (typeTransaction.equals("favoritePosts")) {
+                TransListingsHeader.setText("Your favorites");
+            } else {
+                TransListingsHeader.setText("Your posts");
+            }
+
             allPosts.clear();
             allKeys.clear();
+            ListingsAdapter adapter = (ListingsAdapter) recyclerView.getAdapter();
 
+            if (adapter != null) {
+                adapter.clear();
+                recyclerView.setAdapter(adapter);
+            }
 
             userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -394,17 +405,19 @@ public class PageFragment extends Fragment {
                                     for (String k : finalKeys) {
                                         if (post.getKey().equals(k)) {
                                             Post wantedPost = post.getValue(Post.class);
-                                            allPosts.add(0, wantedPost);
-                                            allKeys.add(0,k);
-                                            Toast.makeText(getActivity(), k,
-                                                    Toast.LENGTH_SHORT).show();
+                                            if (wantedPost.status.equals("Posted") || typeTransaction.equals("sellerPosts")) {
+                                                allPosts.add(0, wantedPost);
+                                                allKeys.add(0,k);
+                                            }
+
                                         }
                                     }
 
 
                                 }
                                 ListingsAdapter adapter = new ListingsAdapter(allPosts, getContext(), allKeys);
-                                recyclerViewTrans.setAdapter(adapter);
+                                recyclerView.setAdapter(adapter);
+
 
                             }
 
@@ -415,7 +428,6 @@ public class PageFragment extends Fragment {
                         });
 
                     }
-
                 }
 
                 @Override
@@ -423,7 +435,6 @@ public class PageFragment extends Fragment {
 
                 }
             });
-
 
         }
     }
@@ -544,9 +555,11 @@ public class PageFragment extends Fragment {
                     itemsData.clear();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String key = snapshot.getKey();
-                        keyData.add(0, key);
                         Post post = snapshot.getValue(Post.class);
-                        itemsData.add(0,post);
+                        if (post.status.equals("Posted")) {
+                            keyData.add(0, key);
+                            itemsData.add(0,post);
+                        }
                     }
                     ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
                     recyclerView.setAdapter(adapter);
@@ -571,9 +584,11 @@ public class PageFragment extends Fragment {
                 itemsData.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String key = snapshot.getKey();
-                    keyData.add(0, key);
                     Post post = snapshot.getValue(Post.class);
-                    itemsData.add(0,post);
+                    if (post.status.equals("Posted")) {
+                        keyData.add(0, key);
+                        itemsData.add(0,post);
+                    }
                 }
                 ListingsAdapter adapter = new ListingsAdapter(itemsData, getContext(), keyData);
                 recyclerView.setAdapter(adapter);

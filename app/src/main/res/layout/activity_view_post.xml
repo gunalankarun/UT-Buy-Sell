@@ -79,8 +79,15 @@
                 android:paddingTop="16dp"
                 android:textColor="@color/text"
                 android:paddingBottom="8dp"
-                android:textSize="18sp"
                 />
+
+            <TextView
+                android:id= "@+id/view_post_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/text"
+                android:paddingTop="16dp"/>
 
             <com.like.LikeButton
                 app:icon_type="Star"
@@ -89,6 +96,13 @@
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/close_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="Close Post" />
 
 
         </LinearLayout>

@@ -51,6 +51,8 @@ public class ViewPostActivity extends AppCompatActivity {
     private TextView item_price;
     private TextView description;
     private TextView categories;
+    private TextView status;
+    private Button mClosePost;
 
     private ImageView image1;
 
@@ -84,12 +86,22 @@ public class ViewPostActivity extends AppCompatActivity {
         item_price = (TextView) findViewById(R.id.view_post_price);
         description = (TextView) findViewById(R.id.view_post_description);
         categories = (TextView) findViewById(R.id.view_post_tags);
+        status = (TextView) findViewById(R.id.view_post_status);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_message_button);
         image1 = (ImageView) findViewById(R.id.view_post_picture1);
         starButton = (LikeButton) findViewById(R.id.star_button);
+        mClosePost = (Button) findViewById(R.id.close_post);
 
         context = ViewPostActivity.this;
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+        mClosePost.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mDatabase.child("posts").child(postId).child("status").setValue("Closed");
+                ViewPostActivity.this.finish();
+            }
+        });
 
         starButton.setOnLikeListener(new OnLikeListener() {
             @Override
@@ -162,11 +174,16 @@ public class ViewPostActivity extends AppCompatActivity {
                         item_name.setText(currentPost.title);
                         item_price.setText("Price: $" + String.format("%.2f", currentPost.price));
                         description.setText("Description: " + currentPost.description);
+                        status.setText("Status: " + currentPost.status);
                         String cats = "";
                         for (String c : currentPost.categories.keySet()) {
                             cats += c + ", ";
                         }
                         categories.setText("Categories: " + cats.substring(0,cats.length()-2));
+
+                        if (currentPost.seller.equals(user.getUid())) {
+                            mClosePost.setVisibility(View.VISIBLE);
+                        }
 
                         FirebaseDatabase.getInstance().getReference("users/" + currentPost.seller).
                                 addListenerForSingleValueEvent(new ValueEventListener() {
