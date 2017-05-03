@@ -32,28 +32,34 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorInactive">
 
                 <AutoCompleteTextView
                     android:id="@+id/register_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
+                    android:textColorHint="#000000"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
+                    android:textColor="@android:color/black"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorInactive">
 
                 <EditText
                     android:id="@+id/register_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
+                    android:textColorHint="#000000"
+                    android:textColor="@android:color/black"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
@@ -65,7 +71,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorInactive">
 
                 <EditText
                     android:id="@+id/register_first_name"
@@ -73,6 +80,8 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="First Name"
+                    android:textColorHint="#000000"
+                    android:textColor="#000000"
                     android:inputType="textPersonName" />
 
             </android.support.design.widget.TextInputLayout>
@@ -80,7 +89,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorInactive">
 
                 <EditText
                     android:id="@+id/register_last_name"
@@ -88,6 +98,8 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Last Name"
+                    android:textColorHint ="@color/text"
+                    android:textColor="@color/text"
                     android:inputType="textPersonName" />
 
             </android.support.design.widget.TextInputLayout>
