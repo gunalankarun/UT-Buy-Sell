@@ -49,6 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -65,7 +66,6 @@ public class PageFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManagerTrans;
     private ArrayList<Post> allPosts = new ArrayList<Post>();
     private ArrayList<String> allKeys = new ArrayList<String>();
-    String pID;
     //private FrameLayout fragmentContainer;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -368,12 +368,10 @@ public class PageFragment extends Fragment {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             //DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
 
-            Query userPostsQuery = mDatabase.child("users").child(user.getUid()).child(typeTransaction);
-
             if (typeTransaction.equals("favoritePosts")) {
-                TransListingsHeader.setText("Your favorites");
+                TransListingsHeader.setText("Your Favorites");
             } else {
-                TransListingsHeader.setText("Your posts");
+                TransListingsHeader.setText("Your Posts");
             }
 
             allPosts.clear();
@@ -385,29 +383,30 @@ public class PageFragment extends Fragment {
                 recyclerView.setAdapter(adapter);
             }
 
+            Query userPostsQuery = mDatabase.child("users").child(user.getUid()).child(typeTransaction);
             userPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
 
-                        ArrayList<String> keys = new ArrayList<String>();
+                        Map<String, Boolean> keys = new HashMap<>();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            pID = snapshot.getKey();
-                            keys.add(pID);
+                            keys.put(snapshot.getKey(),(Boolean)snapshot.getValue());
                         }
 
-                        final ArrayList<String> finalKeys = new ArrayList<String>(keys);
+                        final Map<String, Boolean> finalKeys = new HashMap<>(keys);
+
                         Query postsQ = mDatabase.child("posts");
                         postsQ.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
                                 for (DataSnapshot post : snapshot.getChildren()) {
-                                    for (String k : finalKeys) {
-                                        if (post.getKey().equals(k)) {
+                                    for (Map.Entry<String, Boolean> entry : finalKeys.entrySet()) {
+                                        if (post.getKey().equals(entry.getKey()) && entry.getValue()==true) {
                                             Post wantedPost = post.getValue(Post.class);
                                             if (wantedPost.status.equals("Posted") || typeTransaction.equals("sellerPosts")) {
                                                 allPosts.add(0, wantedPost);
-                                                allKeys.add(0,k);
+                                                allKeys.add(0,entry.getKey());
                                             }
 
                                         }
