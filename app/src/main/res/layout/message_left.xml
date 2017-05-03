@@ -19,12 +19,13 @@
                 android:layout_alignParentLeft="true"
                 android:paddingLeft="10dp"
                 android:paddingBottom="6dp"
-                android:textColor="@android:color/black" android:textStyle="bold"/>
+                android:textColor="@color/text"
+                android:textStyle="bold"/>
 
         <TextView
                 android:id="@+id/txtDate"
                 android:layout_alignParentRight="true"
-                android:textColor="@android:color/black"
+                android:textColor="@color/text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="2dp"
@@ -47,7 +48,7 @@
                     android:paddingLeft="12dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/text"
                     android:textSize="14sp"
                     android:text="Hello"
                     />
